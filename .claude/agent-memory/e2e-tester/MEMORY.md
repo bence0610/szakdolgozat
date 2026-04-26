@@ -1,0 +1,1 @@
+- [KTE Iteration 1 Test Strategy](project_kte_iteration1.md) — Risk map and test approach for KTE-001–KTE-007 (Foundation, no UI, API-level E2E)
