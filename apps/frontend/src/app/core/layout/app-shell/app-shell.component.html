@@ -1,0 +1,72 @@
+<mat-sidenav-container class="kte-shell">
+  <mat-sidenav
+    #sidenav
+    mode="over"
+    [opened]="sidenavOpen()"
+    (closed)="closeSidenav()"
+    class="kte-shell__sidenav"
+  >
+    <mat-nav-list>
+      @for (item of navItems(); track item.route) {
+        <a
+          mat-list-item
+          [routerLink]="item.route"
+          [routerLinkActive]="'kte-active'"
+          [routerLinkActiveOptions]="{ exact: !!item.exact }"
+          (click)="closeSidenav()"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="kte-shell__content">
+    <mat-toolbar color="primary" class="kte-shell__toolbar">
+      <button
+        mat-icon-button
+        type="button"
+        aria-label="Menü"
+        (click)="toggleSidenav()"
+        class="kte-shell__menu-btn"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <a routerLink="/" class="kte-shell__brand" aria-label="KTE Jegyportál">
+        <span class="kte-shell__brand-mark">KTE</span>
+        <span class="kte-shell__brand-text">Jegyportál</span>
+      </a>
+
+      <nav class="kte-shell__nav">
+        @for (item of navItems(); track item.route) {
+          <a
+            mat-button
+            [routerLink]="item.route"
+            [routerLinkActive]="'kte-active'"
+            [routerLinkActiveOptions]="{ exact: !!item.exact }"
+          >
+            {{ item.label }}
+          </a>
+        }
+      </nav>
+
+      <span class="kte-shell__spacer"></span>
+
+      <a mat-stroked-button routerLink="/checkout">
+        <mat-icon>payments</mat-icon>
+        Pénztár
+      </a>
+    </mat-toolbar>
+
+    <main class="kte-shell__main">
+      <router-outlet />
+    </main>
+
+    <footer class="kte-shell__footer">
+      <span>&copy; {{ year }} Kecskeméti TE</span>
+      <span>Hivatalos jegyértékesítés</span>
+    </footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,90 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.kte-shell {
+  height: 100vh;
+
+  &__sidenav {
+    width: 260px;
+    background: var(--kte-color-surface);
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  &__toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    gap: var(--kte-spacing-3);
+    box-shadow: var(--kte-shadow-sm);
+  }
+
+  &__menu-btn {
+    @media (min-width: 900px) {
+      display: none;
+    }
+  }
+
+  &__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--kte-spacing-2);
+    color: inherit;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+
+    &-mark {
+      background: var(--kte-color-accent);
+      color: var(--kte-color-primary);
+      padding: 2px 8px;
+      border-radius: var(--kte-radius-md);
+      font-size: 14px;
+    }
+
+    &-text {
+      font-size: 18px;
+    }
+  }
+
+  &__nav {
+    display: none;
+    gap: var(--kte-spacing-1);
+
+    @media (min-width: 900px) {
+      display: inline-flex;
+    }
+
+    a.kte-active {
+      background: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
+  }
+
+  &__main {
+    flex: 1 1 auto;
+    padding: var(--kte-spacing-6);
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--kte-spacing-4) var(--kte-spacing-6);
+    border-top: 1px solid var(--kte-color-border);
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 13px;
+    background: var(--kte-color-surface);
+  }
+}
