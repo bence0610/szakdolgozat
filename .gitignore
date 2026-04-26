@@ -1,0 +1,69 @@
+# Dependencies
+node_modules/
+*/node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+out/
+.angular/
+*/dist/
+**/dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temporary
+tmp/
+temp/
+*.tmp
+*.cache
+
+# TypeScript
+*.tsbuildinfo
+
+# Angular cache
+.angular/cache/
+
+# Stripe / Anthropic / sensitive
+*.pem
+*.key
+secrets/
+
+# Local docker
+docker-compose.override.yml
