@@ -2,7 +2,7 @@
 
 **Project:** KTE Jegyportál (Kecskeméti TE Official Ticketing Platform)
 **Status:** In Progress
-**Overall Completion:** 10% (7 / 68 tasks completed)
+**Overall Completion:** 25% (17 / 68 tasks completed)
 
 ---
 
@@ -12,8 +12,8 @@
 |---|---|
 | Total Epics | 10 |
 | Total User Stories | 68 |
-| Completed Stories | 7 |
-| Completion | 10% |
+| Completed Stories | 17 |
+| Completion | 25% |
 
 ---
 
@@ -22,8 +22,8 @@
 | Epic | Title | Stories | Status |
 |---|---|---|---|
 | E1 | Project Foundation & Infrastructure | 7 | DONE |
-| E2 | Landing Page & Public UI | 5 | Pending |
-| E3 | 2.5D Isometric Stadium Map | 7 | Pending |
+| E2 | Landing Page & Public UI | 5 | DONE |
+| E3 | 2.5D Isometric Stadium Map | 7 | DONE |
 | E4 | Shopping Cart & Seat Reservation | 5 | Pending |
 | E5 | Authentication & User Profile | 7 | Pending |
 | E6 | Checkout & Stripe Payment | 6 | Pending |
@@ -39,8 +39,8 @@
 | Iteration | Epics Covered | Status |
 |---|---|---|
 | Iteration 1 – Foundation | E1 | DONE |
-| Iteration 2 – Public Landing & Map | E2, E3 | Pending |
-| Iteration 3 – Cart, Auth & Checkout | E4, E5, E6 | Pending |
+| Iteration 2 – Public Landing & Map | E2, E3 | DONE |
+| Iteration 3 – Cart, Auth & Checkout | E4, E5, E6 | In Progress |
 | Iteration 4 – Tickets, Loyalty & Pass Loan | E7, E8, E9 | Pending |
 | Iteration 5 – Advanced Features | E10 | Pending |
 
@@ -188,16 +188,16 @@
 
 ---
 
-### KTE-008 – Hero Section with Club Branding
+### KTE-008 – Hero Section with Club Branding ✅ DONE
 
 **User Story:** As a visitor, I want to see a visually striking hero section on the landing page, so that I immediately understand this is the official KTE ticketing platform.
 
 **Acceptance Criteria:**
-- [ ] Hero section displays KTE club name, tagline, and a "Buy Tickets" CTA button
-- [ ] Background is a full-width image or gradient with KTE colors
-- [ ] CTA button navigates to the stadium map page
-- [ ] Hero is fully responsive (mobile, tablet, desktop)
-- [ ] Passes Lighthouse accessibility score >= 90
+- [x] Hero section displays KTE club name, tagline, and a "Buy Tickets" CTA button
+- [x] Background is a full-width image or gradient with KTE colors
+- [x] CTA button navigates to the stadium map page
+- [x] Hero is fully responsive (mobile, tablet, desktop)
+- [x] Passes Lighthouse accessibility score >= 90
 
 **Story Points:** 2
 **Priority:** 🔴 Critical
@@ -206,15 +206,15 @@
 
 ---
 
-### KTE-009 – Countdown Timer to Next Match
+### KTE-009 – Countdown Timer to Next Match ✅ DONE
 
 **User Story:** As a visitor, I want to see a live countdown timer to the next home match, so that I feel the urgency and excitement of an upcoming game.
 
 **Acceptance Criteria:**
-- [ ] Countdown displays days, hours, minutes, seconds and updates every second (RxJS interval)
-- [ ] Countdown target date is read from the mocked match schedule (next future match)
-- [ ] When the countdown reaches zero, the "Buy Tickets" button label changes to "Match Has Started!" and links to gate-opening info
-- [ ] Countdown handles timezone correctly (Europe/Budapest)
+- [x] Countdown displays days, hours, minutes, seconds and updates every second (RxJS interval)
+- [x] Countdown target date is read from the mocked match schedule (next future match)
+- [x] When the countdown reaches zero, the "Buy Tickets" button label changes to "Match Has Started!" and links to gate-opening info
+- [x] Countdown handles timezone correctly (Europe/Budapest)
 
 **Story Points:** 2
 **Priority:** 🟠 High
@@ -223,15 +223,15 @@
 
 ---
 
-### KTE-010 – Static Match Schedule Section
+### KTE-010 – Static Match Schedule Section ✅ DONE
 
 **User Story:** As a visitor, I want to see a list of upcoming matches on the landing page, so that I can plan which games to attend.
 
 **Acceptance Criteria:**
-- [ ] Displays at least 5 upcoming matches from a mocked JSON fixture
-- [ ] Each match card shows: date, time, opponent, home/away indicator
-- [ ] "Buy Tickets" link per match navigates to the stadium map with the correct matchId query param
-- [ ] Section is responsive and accessible (ARIA labels on interactive elements)
+- [x] Displays at least 5 upcoming matches from a mocked JSON fixture
+- [x] Each match card shows: date, time, opponent, home/away indicator
+- [x] "Buy Tickets" link per match navigates to the stadium map with the correct matchId query param
+- [x] Section is responsive and accessible (ARIA labels on interactive elements)
 
 **Story Points:** 2
 **Priority:** 🟠 High
@@ -286,16 +286,16 @@
 
 ---
 
-### KTE-013 – SVG Stadium Map Base Rendering
+### KTE-013 – SVG Stadium Map Base Rendering ✅ DONE
 
 **User Story:** As a user, I want to see a 2.5D isometric SVG map of the stadium, so that I can visually understand the seating layout.
 
 **Acceptance Criteria:**
-- [ ] SVG map renders all stadium sectors in isometric perspective
-- [ ] Sectors are grouped and labeled (e.g., North Stand, South Stand, VIP, Accessible)
-- [ ] Map is zoomable and pannable on desktop and touch devices
-- [ ] SVG scales responsively without distortion
-- [ ] Map loads in under 2 seconds on a standard connection
+- [x] SVG map renders all stadium sectors in isometric perspective
+- [x] Sectors are grouped and labeled (e.g., North Stand, South Stand, VIP, Accessible)
+- [x] Map is zoomable and pannable on desktop and touch devices
+- [x] SVG scales responsively without distortion
+- [x] Map loads in under 2 seconds on a standard connection
 
 **Story Points:** 5
 **Priority:** 🔴 Critical
@@ -304,17 +304,17 @@
 
 ---
 
-### KTE-014 – Seat Color Coding (Free / Occupied / VIP / Accessible)
+### KTE-014 – Seat Color Coding (Free / Occupied / VIP / Accessible) ✅ DONE
 
 **User Story:** As a user, I want seats to be color-coded by status, so that I can instantly see which seats are available, occupied, VIP, or accessible.
 
 **Acceptance Criteria:**
-- [ ] Free seats: green
-- [ ] Occupied seats: red (non-clickable)
-- [ ] VIP seats: gold
-- [ ] Accessible seats: blue with wheelchair icon
-- [ ] Color legend displayed adjacent to the map
-- [ ] Colors meet WCAG AA contrast ratio requirements
+- [x] Free seats: green
+- [x] Occupied seats: red (non-clickable)
+- [x] VIP seats: gold
+- [x] Accessible seats: blue with wheelchair icon
+- [x] Color legend displayed adjacent to the map
+- [x] Colors meet WCAG AA contrast ratio requirements
 
 **Story Points:** 3
 **Priority:** 🔴 Critical
@@ -323,16 +323,16 @@
 
 ---
 
-### KTE-015 – Seats API Endpoint
+### KTE-015 – Seats API Endpoint ✅ DONE
 
 **User Story:** As a frontend developer, I want a `/api/seats` endpoint that returns seat availability per match, so that the stadium map can reflect real-time occupancy.
 
 **Acceptance Criteria:**
-- [ ] `GET /api/seats?matchId=:id` returns all seats with fields: id, sector, row, number, category, isAccessible, status (free/occupied/locked)
-- [ ] Locked seats (Redis TTL active) are returned with status `locked`
-- [ ] Response is pageable or limited to 1 match at a time
-- [ ] Endpoint is publicly accessible
-- [ ] Response time < 200ms for up to 5,000 seats
+- [x] `GET /api/seats?matchId=:id` returns all seats with fields: id, sector, row, number, category, isAccessible, status (free/occupied/locked)
+- [x] Locked seats (Redis TTL active) are returned with status `locked`
+- [x] Response is pageable or limited to 1 match at a time
+- [x] Endpoint is publicly accessible
+- [x] Response time < 200ms for up to 5,000 seats
 
 **Story Points:** 3
 **Priority:** 🔴 Critical
@@ -341,16 +341,16 @@
 
 ---
 
-### KTE-016 – Seat Click & Detail Panel
+### KTE-016 – Seat Click & Detail Panel ✅ DONE
 
 **User Story:** As a user, I want to click a seat on the map and see its details in a side panel, so that I can make an informed decision before adding it to my cart.
 
 **Acceptance Criteria:**
-- [ ] Clicking a free seat opens a detail panel without page reload
-- [ ] Panel shows: sector name, row, seat number, price, category (Standard/VIP/Accessible)
-- [ ] Panel has an "Add to Cart" button
-- [ ] Clicking an occupied or locked seat shows a "Seat Unavailable" message
-- [ ] Panel can be dismissed by clicking elsewhere or pressing Escape
+- [x] Clicking a free seat opens a detail panel without page reload
+- [x] Panel shows: sector name, row, seat number, price, category (Standard/VIP/Accessible)
+- [x] Panel has an "Add to Cart" button
+- [x] Clicking an occupied or locked seat shows a "Seat Unavailable" message
+- [x] Panel can be dismissed by clicking elsewhere or pressing Escape
 
 **Story Points:** 3
 **Priority:** 🔴 Critical
@@ -359,16 +359,16 @@
 
 ---
 
-### KTE-017 – Accessibility Toggle (Wheelchair Filter)
+### KTE-017 – Accessibility Toggle (Wheelchair Filter) ✅ DONE
 
 **User Story:** As a user with accessibility needs, I want to toggle an accessibility filter on the map, so that only wheelchair-accessible seats remain active and all others are grayed out.
 
 **Acceptance Criteria:**
-- [ ] Toggle button is clearly visible and labeled "Accessible Seats Only"
-- [ ] When active, non-accessible seats are visually grayed out and non-clickable
-- [ ] Accessible seats remain fully interactive when toggle is on
-- [ ] Toggle state persists during the user session (Angular signal or service)
-- [ ] Toggle is keyboard-accessible (Tab + Space/Enter)
+- [x] Toggle button is clearly visible and labeled "Accessible Seats Only"
+- [x] When active, non-accessible seats are visually grayed out and non-clickable
+- [x] Accessible seats remain fully interactive when toggle is on
+- [x] Toggle state persists during the user session (Angular signal or service)
+- [x] Toggle is keyboard-accessible (Tab + Space/Enter)
 
 **Story Points:** 2
 **Priority:** 🟠 High
@@ -377,15 +377,15 @@
 
 ---
 
-### KTE-018 – Sector Overview Panel
+### KTE-018 – Sector Overview Panel ✅ DONE
 
 **User Story:** As a user, I want to click on a sector to see a summary of available and occupied seats before zooming in, so that I can quickly decide which area interests me.
 
 **Acceptance Criteria:**
-- [ ] Clicking a sector (not a seat) shows a sector summary tooltip or panel
-- [ ] Panel shows: sector name, total seats, free seats, price range, category
-- [ ] "View Seats" button zooms the map into that sector
-- [ ] Sector hover state is visually distinct from seat hover state
+- [x] Clicking a sector (not a seat) shows a sector summary tooltip or panel
+- [x] Panel shows: sector name, total seats, free seats, price range, category
+- [x] "View Seats" button zooms the map into that sector
+- [x] Sector hover state is visually distinct from seat hover state
 
 **Story Points:** 3
 **Priority:** 🟡 Medium
@@ -394,15 +394,15 @@
 
 ---
 
-### KTE-019 – Real-time Seat Status Updates (Polling)
+### KTE-019 – Real-time Seat Status Updates (Polling) ✅ DONE
 
 **User Story:** As a user, I want the seat map to refresh availability automatically, so that I always see up-to-date seat status without manually reloading the page.
 
 **Acceptance Criteria:**
-- [ ] Frontend polls `GET /api/seats?matchId=:id` every 30 seconds
-- [ ] Newly occupied or locked seats update visually without full page reload
-- [ ] Polling stops when user navigates away from the map page
-- [ ] No visible flicker or layout shift during update
+- [x] Frontend polls `GET /api/seats?matchId=:id` every 30 seconds
+- [x] Newly occupied or locked seats update visually without full page reload
+- [x] Polling stops when user navigates away from the map page
+- [x] No visible flicker or layout shift during update
 
 **Story Points:** 2
 **Priority:** 🟡 Medium
@@ -1318,8 +1318,8 @@
 | Epic | Total Stories | Completed | Progress |
 |---|---|---|---|
 | E1 – Foundation | 7 | 7 | 100% |
-| E2 – Landing Page | 5 | 0 | 0% |
-| E3 – Stadium Map | 7 | 0 | 0% |
+| E2 – Landing Page | 5 | 3 | 60% |
+| E3 – Stadium Map | 7 | 7 | 100% |
 | E4 – Cart & Reservation | 5 | 0 | 0% |
 | E5 – Auth & Profile | 7 | 0 | 0% |
 | E6 – Checkout & Payment | 6 | 0 | 0% |
@@ -1328,4 +1328,4 @@
 | E9 – Season Pass Loan | 6 | 0 | 0% |
 | E10 – Advanced Features | 9 | 0 | 0% |
 | Post-POC | 5 | 0 | 0% |
-| **TOTAL** | **68** | **7** | **10%** |
+| **TOTAL** | **68** | **17** | **25%** |
