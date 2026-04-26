@@ -8,6 +8,8 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { APP_ROUTES } from './app.routes';
 import { apiBaseUrlInterceptor } from './core/interceptors/api-base-url.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { provideMatchesFeature } from './state/matches';
+import { provideSeatsFeature } from './state/seats';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,5 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideStore({}),
     provideEffects([]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
+    provideMatchesFeature(),
+    provideSeatsFeature(),
   ],
 };
