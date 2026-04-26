@@ -23,7 +23,7 @@ KTE Jegyportál is a Hungarian football ticketing platform for Kecskeméti TE. A
 - E4 – Cart Summary Page (KTE-023) — inferred from acceptance criteria
 - E6 – Checkout Page & Order Confirmation (KTE-032, KTE-036) — inferred
 
-## Paper pages created (all in file "Sunny ember", Page 1)
+## Paper pages created (all in file "Xenodochial owl", Page 1)
 
 1. 01 – Landing Page
 2. 02 – Stadium Map

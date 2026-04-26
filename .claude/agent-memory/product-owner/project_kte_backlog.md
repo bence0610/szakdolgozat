@@ -48,3 +48,4 @@ Fibonacci: 1, 2, 3, 5, 8. Each story sized for 1–2 days by one developer.
 ## Completion tracking
 - 2026-04-25 (creation): 0% — all 68 stories pending.
 - 2026-04-26: Iteration 1 – Foundation DONE. 7/68 stories complete (10%). KTE-001–007 all marked DONE.
+- 2026-04-26: Iteration 2 – Public Landing & Map DONE. 17/68 stories complete (25%). KTE-008–010 (E2, 3 of 5 tasks — KTE-011 and KTE-012 not yet done) and KTE-013–019 (E3, all 7 tasks) marked DONE. E3 epic 100% complete; E2 epic 60% complete (KTE-011/012 remain pending for Iteration 3).
