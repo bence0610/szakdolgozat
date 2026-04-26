@@ -8,6 +8,7 @@ export interface AppConfig {
   frontendUrl: string;
   corsOrigins: string[];
   logLevel: string;
+  homeTeamName: string;
 }
 
 export default registerAs(
@@ -23,5 +24,6 @@ export default registerAs(
       .map((origin) => origin.trim())
       .filter(Boolean),
     logLevel: process.env.LOG_LEVEL ?? 'info',
+    homeTeamName: process.env.HOME_TEAM_NAME ?? 'Kecskeméti TE',
   }),
 );

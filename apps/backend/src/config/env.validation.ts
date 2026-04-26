@@ -7,6 +7,7 @@ export const envValidationSchema = Joi.object({
   APP_URL: Joi.string().uri().required(),
   FRONTEND_URL: Joi.string().uri().required(),
   CORS_ORIGINS: Joi.string().required(),
+  HOME_TEAM_NAME: Joi.string().default('Kecskeméti TE'),
 
   // Database
   DB_HOST: Joi.string().required(),
