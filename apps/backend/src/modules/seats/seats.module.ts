@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Seat } from '../../database/entities';
+import { Match, Seat, Ticket } from '../../database/entities';
+import { MatchSeatsController } from './match-seats.controller';
 import { SeatsController } from './seats.controller';
 import { SeatsService } from './seats.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Seat])],
-  controllers: [SeatsController],
+  imports: [TypeOrmModule.forFeature([Seat, Ticket, Match])],
+  controllers: [SeatsController, MatchSeatsController],
   providers: [SeatsService],
   exports: [SeatsService],
 })
