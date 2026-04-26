@@ -20,5 +20,4 @@ const baseOptions: DataSourceOptions = {
   timezone: 'Z',
 };
 
-export const AppDataSource = new DataSource(baseOptions);
-export default AppDataSource;
+export default new DataSource(baseOptions);

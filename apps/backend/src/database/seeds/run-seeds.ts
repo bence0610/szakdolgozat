@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Logger } from '@nestjs/common';
-import { AppDataSource } from '../data-source';
+import AppDataSource from '../data-source';
 import { runInitialSeed } from './initial.seed';
 
 const logger = new Logger('SeedRunner');
