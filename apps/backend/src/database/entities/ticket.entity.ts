@@ -1,0 +1,76 @@
+import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { BaseEntity } from './base.entity';
+import { Match } from './match.entity';
+import { Seat } from './seat.entity';
+import { User } from './user.entity';
+import { SeasonPass } from './season-pass.entity';
+
+export enum TicketStatus {
+  PENDING_PAYMENT = 'pending_payment',
+  PAID = 'paid',
+  CANCELLED = 'cancelled',
+  REFUNDED = 'refunded',
+  USED = 'used',
+}
+
+export enum TicketSource {
+  SINGLE = 'single',
+  SEASON_PASS = 'season_pass',
+  LOAN = 'loan',
+}
+
+@Entity({ name: 'tickets' })
+@Unique('uq_tickets_match_seat', ['matchId', 'seatId'])
+@Index('idx_tickets_user', ['userId'])
+@Index('idx_tickets_status', ['status'])
+@Index('idx_tickets_payment_intent', ['stripePaymentIntentId'])
+export class Ticket extends BaseEntity {
+  @Column({ type: 'varchar', length: 36, name: 'match_id' })
+  matchId!: string;
+
+  @Column({ type: 'varchar', length: 36, name: 'seat_id' })
+  seatId!: string;
+
+  @Column({ type: 'varchar', length: 36, name: 'user_id' })
+  userId!: string;
+
+  @Column({ type: 'varchar', length: 36, nullable: true, name: 'season_pass_id' })
+  seasonPassId?: string;
+
+  @Column({ type: 'enum', enum: TicketStatus, default: TicketStatus.PENDING_PAYMENT })
+  status!: TicketStatus;
+
+  @Column({ type: 'enum', enum: TicketSource, default: TicketSource.SINGLE })
+  source!: TicketSource;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'price_paid' })
+  pricePaid!: string;
+
+  @Column({ type: 'varchar', length: 8, default: 'HUF' })
+  currency!: string;
+
+  @Column({ type: 'varchar', length: 64, unique: true, name: 'qr_code' })
+  qrCode!: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'stripe_payment_intent_id' })
+  stripePaymentIntentId?: string;
+
+  @Column({ type: 'timestamp', nullable: true, name: 'used_at' })
+  usedAt?: Date;
+
+  @ManyToOne(() => Match, (match) => match.tickets, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'match_id' })
+  match?: Match;
+
+  @ManyToOne(() => Seat, (seat) => seat.tickets, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'seat_id' })
+  seat?: Seat;
+
+  @ManyToOne(() => User, (user) => user.tickets, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'user_id' })
+  user?: User;
+
+  @ManyToOne(() => SeasonPass, (pass) => pass.tickets, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'season_pass_id' })
+  seasonPass?: SeasonPass;
+}
