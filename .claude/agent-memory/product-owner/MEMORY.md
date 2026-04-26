@@ -1,0 +1,1 @@
+- [KTE Jegyportál – Backlog Structure](project_kte_backlog.md) — 68-story backlog, 5 iterations, 10 POC epics + post-POC group; conventions, UI-gating, tech stack
