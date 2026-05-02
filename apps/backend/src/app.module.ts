@@ -14,6 +14,8 @@ import { WaitlistModule } from './modules/waitlist/waitlist.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { ChatbotModule } from './modules/chatbot/chatbot.module';
 import { HealthModule } from './modules/health/health.module';
+import { PaymentsModule } from './modules/payments/payments.module';
+import { WeatherModule } from './modules/weather/weather.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { HealthModule } from './modules/health/health.module';
     WaitlistModule,
     AdminModule,
     ChatbotModule,
+    PaymentsModule,
+    WeatherModule,
   ],
 })
 export class AppModule {}

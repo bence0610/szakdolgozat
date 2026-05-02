@@ -50,6 +50,7 @@ export const envValidationSchema = Joi.object({
   // OpenWeatherMap
   OPENWEATHER_API_KEY: Joi.string().allow('').optional(),
   OPENWEATHER_CITY: Joi.string().default('Kecskemet,HU'),
+  OPENWEATHER_CACHE_TTL_SECONDS: Joi.number().integer().min(60).default(3600),
 
   // Mail
   MAIL_HOST: Joi.string().required(),

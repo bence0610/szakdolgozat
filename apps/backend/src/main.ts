@@ -2,21 +2,32 @@ import 'reflect-metadata';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
+import { json, raw } from 'express';
 import { AppModule } from './app.module';
 import { AppConfig } from './config';
 import { GlobalHttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+    rawBody: true,
   });
 
   const configService = app.get(ConfigService);
   const appConfig = configService.getOrThrow<AppConfig>('app');
 
   app.setGlobalPrefix('api', { exclude: ['health'] });
+
+  // Stripe webhook needs the raw request body for signature verification.
+  // We register a raw bodyParser strictly for that route, then JSON for everything else.
+  app.use('/api/payments/webhook', raw({ type: 'application/json' }));
+  app.use(json({ limit: '1mb' }));
+
+  app.use(cookieParser());
 
   app.enableCors({
     origin: appConfig.corsOrigins,
@@ -51,6 +62,8 @@ async function bootstrap(): Promise<void> {
     .addTag('Waitlist')
     .addTag('Admin')
     .addTag('Chatbot')
+    .addTag('Payments')
+    .addTag('Weather')
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

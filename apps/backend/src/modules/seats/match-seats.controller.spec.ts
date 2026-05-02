@@ -8,6 +8,7 @@ import { SeatLockService } from '../../redis/seat-lock.service';
 import { Match, MatchStatus, Competition, Seat, SeatCategory, Ticket, TicketStatus } from '../../database/entities';
 import { REDIS_CLIENT } from '../../redis/redis.constants';
 import { ConfigService } from '@nestjs/config';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 
 /**
  * Integration tests for MatchSeatsController.
@@ -204,7 +205,10 @@ describe('MatchSeatsController – integration', () => {
           },
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(OptionalJwtAuthGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));

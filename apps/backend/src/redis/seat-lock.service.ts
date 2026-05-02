@@ -10,6 +10,7 @@ export interface SeatLock {
   seatId: string;
   ownerToken: string;
   ttlSeconds: number;
+  userId?: string;
 }
 
 export interface AcquireSeatLockOptions {
@@ -19,6 +20,8 @@ export interface AcquireSeatLockOptions {
   ownerToken?: string;
   /** Override the default TTL for this lock. */
   ttlSeconds?: number;
+  /** Authenticated user id, when available — stored in lock metadata. */
+  userId?: string;
 }
 
 /**
@@ -60,9 +63,15 @@ export class SeatLockService {
   /**
    * Atomically acquire a seat lock with the configured TTL (default 300 s).
    * Returns the lock descriptor on success, or `null` if the seat is already locked.
+   *
+   * Lock value is `<ownerToken>` for backwards compatibility with the
+   * pipeline-based status query in {@link SeatsService.findSeatsForMatch}.
+   * If a `userId` is provided, we also store an auxiliary record at
+   * `seat-lock-owner:{matchId}:{userId}` so the user can retrieve their
+   * outstanding locks (used by checkout flow).
    */
   async acquire(options: AcquireSeatLockOptions): Promise<SeatLock | null> {
-    const { matchId, seatId } = options;
+    const { matchId, seatId, userId } = options;
     const ttlSeconds = options.ttlSeconds ?? this.defaultTtlSeconds;
     const ownerToken = options.ownerToken ?? randomUUID();
     const key = RedisKeys.seatLock(matchId, seatId);
@@ -74,8 +83,16 @@ export class SeatLockService {
       return null;
     }
 
+    if (userId) {
+      // Track which seats this user has locked. The hash field is the seatId,
+      // the value is the ownerToken — useful for the cart "release all" flow.
+      const ownerKey = RedisKeys.seatLockOwner(matchId, userId);
+      await this.redis.hset(ownerKey, seatId, ownerToken);
+      await this.redis.expire(ownerKey, ttlSeconds);
+    }
+
     this.logger.debug(`Acquired seat lock ${key} (ttl=${ttlSeconds}s)`);
-    return { matchId, seatId, ownerToken, ttlSeconds };
+    return { matchId, seatId, ownerToken, ttlSeconds, userId };
   }
 
   /**
