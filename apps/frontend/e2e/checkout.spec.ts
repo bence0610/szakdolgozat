@@ -214,9 +214,11 @@ test.describe('Checkout Page – /checkout', () => {
     await page.goto('/checkout');
     const checkout = new CheckoutPage(page);
 
-    // One seat line in the summary
+    // Bronze tier user: 1 seat line + 1 total line = 2 lines.
+    // Gold/silver/platinum users get an additional discount line — see
+    // checkout-discount.spec.ts for those scenarios (KTE-046).
     await expect(checkout.summaryAside.locator('.kte-checkout__line')).toHaveCount(
-      2, // 1 seat line + 1 total line
+      2, // 1 seat line + 1 total line (no discount for bronze)
     );
     await expect(checkout.summaryAside).toContainText('A');
   });

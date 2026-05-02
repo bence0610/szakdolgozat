@@ -2,7 +2,7 @@
 
 **Project:** KTE Jegyportál (Kecskeméti TE Official Ticketing Platform)
 **Status:** In Progress
-**Overall Completion:** 25% (17 / 68 tasks completed)
+**Overall Completion:** 54% (37 / 68 tasks completed)
 
 ---
 
@@ -12,8 +12,8 @@
 |---|---|
 | Total Epics | 10 |
 | Total User Stories | 68 |
-| Completed Stories | 17 |
-| Completion | 25% |
+| Completed Stories | 37 |
+| Completion | 54% |
 
 ---
 
@@ -24,9 +24,9 @@
 | E1 | Project Foundation & Infrastructure | 7 | DONE |
 | E2 | Landing Page & Public UI | 5 | DONE |
 | E3 | 2.5D Isometric Stadium Map | 7 | DONE |
-| E4 | Shopping Cart & Seat Reservation | 5 | Pending |
-| E5 | Authentication & User Profile | 7 | Pending |
-| E6 | Checkout & Stripe Payment | 6 | Pending |
+| E4 | Shopping Cart & Seat Reservation | 5 | DONE |
+| E5 | Authentication & User Profile | 7 | DONE |
+| E6 | Checkout & Stripe Payment | 6 | DONE |
 | E7 | E-ticket Generation & Email Delivery | 5 | Pending |
 | E8 | Loyalty Points System | 6 | Pending |
 | E9 | Season Pass Loan Flow | 6 | Pending |
@@ -40,7 +40,7 @@
 |---|---|---|
 | Iteration 1 – Foundation | E1 | DONE |
 | Iteration 2 – Public Landing & Map | E2, E3 | DONE |
-| Iteration 3 – Cart, Auth & Checkout | E4, E5, E6 | In Progress |
+| Iteration 3 – Cart, Auth & Checkout | E4, E5, E6 | DONE |
 | Iteration 4 – Tickets, Loyalty & Pass Loan | E7, E8, E9 | Pending |
 | Iteration 5 – Advanced Features | E10 | Pending |
 
@@ -240,16 +240,16 @@
 
 ---
 
-### KTE-011 – Matches API Endpoint (Backend)
+### KTE-011 – Matches API Endpoint (Backend) ✅ DONE
 
 **User Story:** As a frontend developer, I want a `/api/matches` endpoint returning upcoming matches, so that the landing page and other pages can fetch live match data.
 
 **Acceptance Criteria:**
-- [ ] `GET /api/matches` returns array of matches (id, opponent, date, venue, status)
-- [ ] `GET /api/matches/:id` returns a single match with seat availability summary
-- [ ] Matches are seeded via the database seeder (at least 5 future matches)
-- [ ] Endpoint is publicly accessible (no auth required)
-- [ ] Response schema validated with Swagger decorator
+- [x] `GET /api/matches` returns array of matches (id, opponent, date, venue, status)
+- [x] `GET /api/matches/:id` returns a single match with seat availability summary
+- [x] Matches are seeded via the database seeder (at least 5 future matches)
+- [x] Endpoint is publicly accessible (no auth required)
+- [x] Response schema validated with Swagger decorator
 
 **Story Points:** 2
 **Priority:** 🟠 High
@@ -258,16 +258,16 @@
 
 ---
 
-### KTE-012 – Angular Match Service & Data Integration
+### KTE-012 – Angular Match Service & Data Integration ✅ DONE
 
 **User Story:** As a developer, I want an Angular `MatchService` that fetches match data from the backend, so that all UI components share a single data source for match information.
 
 **Acceptance Criteria:**
-- [ ] `MatchService` uses `HttpClient` to call `/api/matches`
-- [ ] Returns typed `Match[]` using a shared interface
-- [ ] Service is used by the landing page countdown and schedule components
-- [ ] Loading and error states are handled and displayed in the UI
-- [ ] Unit tests cover success and error responses
+- [x] `MatchService` uses `HttpClient` to call `/api/matches`
+- [x] Returns typed `Match[]` using a shared interface
+- [x] Service is used by the landing page countdown and schedule components
+- [x] Loading and error states are handled and displayed in the UI
+- [x] Unit tests cover success and error responses
 
 **Story Points:** 2
 **Priority:** 🟠 High
@@ -419,16 +419,16 @@
 
 ---
 
-### KTE-020 – Cart State Management (Angular)
+### KTE-020 – Cart State Management (Angular) ✅ DONE
 
 **User Story:** As a user, I want a persistent shopping cart during my session, so that I can select multiple seats before proceeding to checkout.
 
 **Acceptance Criteria:**
-- [ ] Cart stores selected seats (id, sector, row, number, price) in an Angular service (signal-based)
-- [ ] Maximum 6 seats per cart
-- [ ] Cart is accessible via a cart icon in the header showing item count badge
-- [ ] Cart persists across route changes within the same session
-- [ ] Cart is cleared after successful checkout or session expiry
+- [x] Cart stores selected seats (id, sector, row, number, price) in an Angular service (signal-based)
+- [x] Maximum 6 seats per cart
+- [x] Cart is accessible via a cart icon in the header showing item count badge
+- [x] Cart persists across route changes within the same session
+- [x] Cart is cleared after successful checkout or session expiry
 
 **Story Points:** 3
 **Priority:** 🔴 Critical
@@ -437,16 +437,16 @@
 
 ---
 
-### KTE-021 – Seat Lock API Endpoint
+### KTE-021 – Seat Lock API Endpoint ✅ DONE
 
 **User Story:** As a backend developer, I want a seat-locking endpoint that reserves a seat for 5 minutes in Redis when a user adds it to their cart, so that two users cannot buy the same seat simultaneously.
 
 **Acceptance Criteria:**
-- [ ] `POST /api/seats/:id/lock` locks the seat in Redis for 300 seconds, tagged with `userId`
-- [ ] Returns 409 Conflict if seat is already locked or occupied
-- [ ] `DELETE /api/seats/:id/lock` releases the lock (called on cart removal)
-- [ ] Only authenticated users can lock seats (JWT guard)
-- [ ] Lock is automatically released when TTL expires
+- [x] `POST /api/seats/:id/lock` locks the seat in Redis for 300 seconds, tagged with `userId`
+- [x] Returns 409 Conflict if seat is already locked or occupied
+- [x] `DELETE /api/seats/:id/lock` releases the lock (called on cart removal)
+- [x] Only authenticated users can lock seats (JWT guard)
+- [x] Lock is automatically released when TTL expires
 
 **Story Points:** 3
 **Priority:** 🔴 Critical
@@ -455,15 +455,15 @@
 
 ---
 
-### KTE-022 – 5-Minute Reservation Countdown in Cart
+### KTE-022 – 5-Minute Reservation Countdown in Cart ✅ DONE
 
 **User Story:** As a user, I want to see a 5-minute countdown timer per seat in my cart, so that I know how long my seat reservation lasts.
 
 **Acceptance Criteria:**
-- [ ] Each cart item shows an individual countdown (mm:ss) from the moment of locking
-- [ ] When a countdown reaches 0, the seat is removed from the cart and a toast notification appears
-- [ ] User is prompted to re-select the seat if the lock expires
-- [ ] Timer is driven by the lock timestamp returned from the lock API
+- [x] Each cart item shows an individual countdown (mm:ss) from the moment of locking
+- [x] When a countdown reaches 0, the seat is removed from the cart and a toast notification appears
+- [x] User is prompted to re-select the seat if the lock expires
+- [x] Timer is driven by the lock timestamp returned from the lock API
 
 **Story Points:** 3
 **Priority:** 🔴 Critical
@@ -472,16 +472,16 @@
 
 ---
 
-### KTE-023 – Cart Summary Page
+### KTE-023 – Cart Summary Page ✅ DONE
 
 **User Story:** As a user, I want to review my selected seats on a cart summary page before checkout, so that I can confirm my choices and see the total price.
 
 **Acceptance Criteria:**
-- [ ] Cart page lists all selected seats with details: sector, row, seat number, price
-- [ ] Total price is calculated and displayed prominently
-- [ ] User can remove individual seats from the cart
-- [ ] "Proceed to Checkout" button is disabled if cart is empty
-- [ ] Page shows remaining lock time for each seat
+- [x] Cart page lists all selected seats with details: sector, row, seat number, price
+- [x] Total price is calculated and displayed prominently
+- [x] User can remove individual seats from the cart
+- [x] "Proceed to Checkout" button is disabled if cart is empty
+- [x] Page shows remaining lock time for each seat
 
 **Story Points:** 2
 **Priority:** 🔴 Critical
@@ -490,15 +490,15 @@
 
 ---
 
-### KTE-024 – Guest vs. Authenticated Cart Flow
+### KTE-024 – Guest vs. Authenticated Cart Flow ✅ DONE
 
 **User Story:** As a guest user, I want to browse and add seats to a cart, and be prompted to log in only when I proceed to checkout, so that the purchase flow is not blocked unnecessarily.
 
 **Acceptance Criteria:**
-- [ ] Guests can add seats to the cart and view the cart summary
-- [ ] Clicking "Proceed to Checkout" redirects unauthenticated users to the login page with a `returnUrl` query param
-- [ ] After login, the user is redirected back to checkout with cart intact
-- [ ] Guest cart is stored in `sessionStorage`
+- [x] Guests can add seats to the cart and view the cart summary
+- [x] Clicking "Proceed to Checkout" redirects unauthenticated users to the login page with a `returnUrl` query param
+- [x] After login, the user is redirected back to checkout with cart intact
+- [x] Guest cart is stored in `sessionStorage`
 
 **Story Points:** 2
 **Priority:** 🟠 High
@@ -517,16 +517,16 @@
 
 ---
 
-### KTE-025 – User Registration API
+### KTE-025 – User Registration API ✅ DONE
 
 **User Story:** As a new user, I want to register with my email and password, so that I can access personalized features like ticket history and loyalty points.
 
 **Acceptance Criteria:**
-- [ ] `POST /api/auth/register` accepts email, password, name
-- [ ] Password is hashed with bcrypt (min rounds: 12)
-- [ ] Duplicate email returns 409 Conflict
-- [ ] Registration awards +100 loyalty points (initial bonus)
-- [ ] Returns JWT access token and refresh token on success
+- [x] `POST /api/auth/register` accepts email, password, name
+- [x] Password is hashed with bcrypt (min rounds: 12)
+- [x] Duplicate email returns 409 Conflict
+- [x] Registration awards +100 loyalty points (initial bonus)
+- [x] Returns JWT access token and refresh token on success
 
 **Story Points:** 3
 **Priority:** 🔴 Critical
@@ -535,16 +535,16 @@
 
 ---
 
-### KTE-026 – User Login API & JWT Auth Guard
+### KTE-026 – User Login API & JWT Auth Guard ✅ DONE
 
 **User Story:** As a registered user, I want to log in with my email and password and receive a JWT, so that I can access protected features securely.
 
 **Acceptance Criteria:**
-- [ ] `POST /api/auth/login` validates credentials and returns access + refresh JWT
-- [ ] Access token expires in 15 minutes; refresh token in 7 days
-- [ ] `POST /api/auth/refresh` issues a new access token using a valid refresh token
-- [ ] `POST /api/auth/logout` invalidates the refresh token (Redis blacklist or DB flag)
-- [ ] NestJS `JwtAuthGuard` protects all authenticated routes
+- [x] `POST /api/auth/login` validates credentials and returns access + refresh JWT
+- [x] Access token expires in 15 minutes; refresh token in 7 days
+- [x] `POST /api/auth/refresh` issues a new access token using a valid refresh token
+- [x] `POST /api/auth/logout` invalidates the refresh token (Redis blacklist or DB flag)
+- [x] NestJS `JwtAuthGuard` protects all authenticated routes
 
 **Story Points:** 3
 **Priority:** 🔴 Critical
@@ -553,16 +553,16 @@
 
 ---
 
-### KTE-027 – Angular Auth Service & Token Management
+### KTE-027 – Angular Auth Service & Token Management ✅ DONE
 
 **User Story:** As a developer, I want an Angular `AuthService` that handles login, logout, token storage, and automatic token refresh, so that all components can rely on a consistent authentication state.
 
 **Acceptance Criteria:**
-- [ ] `AuthService` stores access token in memory (not localStorage for XSS protection); refresh token in `HttpOnly` cookie
-- [ ] Automatic silent refresh before token expiry using an Angular HTTP interceptor
-- [ ] `isAuthenticated$` observable for components to react to auth state changes
-- [ ] Logout clears all tokens and redirects to home
-- [ ] Unit tests cover login, logout, and token refresh flows
+- [x] `AuthService` stores access token in memory (not localStorage for XSS protection); refresh token in `HttpOnly` cookie
+- [x] Automatic silent refresh before token expiry using an Angular HTTP interceptor
+- [x] `isAuthenticated$` observable for components to react to auth state changes
+- [x] Logout clears all tokens and redirects to home
+- [x] Unit tests cover login, logout, and token refresh flows
 
 **Story Points:** 3
 **Priority:** 🔴 Critical
@@ -571,16 +571,16 @@
 
 ---
 
-### KTE-028 – Login & Registration UI Pages
+### KTE-028 – Login & Registration UI Pages ✅ DONE
 
 **User Story:** As a user, I want clean login and registration pages, so that I can sign up or sign in quickly without confusion.
 
 **Acceptance Criteria:**
-- [ ] Login page: email + password fields, "Log In" button, link to registration
-- [ ] Registration page: name, email, password, confirm password fields with validation
-- [ ] Form validation errors shown inline (required, email format, password min length 8)
-- [ ] Successful login redirects to `returnUrl` or home
-- [ ] Pages are responsive and accessible
+- [x] Login page: email + password fields, "Log In" button, link to registration
+- [x] Registration page: name, email, password, confirm password fields with validation
+- [x] Form validation errors shown inline (required, email format, password min length 8)
+- [x] Successful login redirects to `returnUrl` or home
+- [x] Pages are responsive and accessible
 
 **Story Points:** 2
 **Priority:** 🔴 Critical
@@ -589,16 +589,16 @@
 
 ---
 
-### KTE-029 – User Profile Page
+### KTE-029 – User Profile Page ✅ DONE
 
 **User Story:** As a logged-in user, I want a profile page showing my account information, active tickets, and purchase history, so that I can manage my purchases in one place.
 
 **Acceptance Criteria:**
-- [ ] Profile page shows: name, email, loyalty tier badge, loyalty points balance
-- [ ] Active tickets section lists upcoming tickets (match, seat, QR code preview)
-- [ ] Purchase history shows past tickets (match, seat, date, price)
-- [ ] Data is fetched from `GET /api/users/me/tickets`
-- [ ] Page is only accessible to authenticated users (route guard)
+- [x] Profile page shows: name, email, loyalty tier badge, loyalty points balance
+- [x] Active tickets section lists upcoming tickets (match, seat, QR code preview)
+- [x] Purchase history shows past tickets (match, seat, date, price)
+- [x] Data is fetched from `GET /api/users/me/tickets`
+- [x] Page is only accessible to authenticated users (route guard)
 
 **Story Points:** 3
 **Priority:** 🟠 High
@@ -607,16 +607,16 @@
 
 ---
 
-### KTE-030 – User Profile API Endpoints
+### KTE-030 – User Profile API Endpoints ✅ DONE
 
 **User Story:** As a backend developer, I want profile and ticket history endpoints, so that the frontend profile page can display accurate user data.
 
 **Acceptance Criteria:**
-- [ ] `GET /api/users/me` returns user profile (name, email, loyaltyPoints, loyaltyTier)
-- [ ] `GET /api/users/me/tickets` returns active and past tickets with match and seat details
-- [ ] All endpoints protected by `JwtAuthGuard`
-- [ ] Pagination supported on ticket history (limit/offset)
-- [ ] 401 returned for unauthenticated requests
+- [x] `GET /api/users/me` returns user profile (name, email, loyaltyPoints, loyaltyTier)
+- [x] `GET /api/users/me/tickets` returns active and past tickets with match and seat details
+- [x] All endpoints protected by `JwtAuthGuard`
+- [x] Pagination supported on ticket history (limit/offset)
+- [x] 401 returned for unauthenticated requests
 
 **Story Points:** 2
 **Priority:** 🟠 High
@@ -625,15 +625,15 @@
 
 ---
 
-### KTE-031 – Route Guards & Auth State in Angular
+### KTE-031 – Route Guards & Auth State in Angular ✅ DONE
 
 **User Story:** As a developer, I want Angular route guards protecting authenticated pages, so that unauthenticated users are redirected to login automatically.
 
 **Acceptance Criteria:**
-- [ ] `AuthGuard` functional guard redirects to `/login?returnUrl=...` for protected routes
-- [ ] `GuestGuard` redirects authenticated users away from login/register pages
-- [ ] Guards applied to: `/profile`, `/checkout`, `/admin`
-- [ ] Guard uses `AuthService.isAuthenticated$` to determine state
+- [x] `AuthGuard` functional guard redirects to `/login?returnUrl=...` for protected routes
+- [x] `GuestGuard` redirects authenticated users away from login/register pages
+- [x] Guards applied to: `/profile`, `/checkout`, `/admin`
+- [x] Guard uses `AuthService.isAuthenticated$` to determine state
 
 **Story Points:** 1
 **Priority:** 🟠 High
@@ -650,16 +650,16 @@
 
 ---
 
-### KTE-032 – Checkout Page UI
+### KTE-032 – Checkout Page UI ✅ DONE
 
 **User Story:** As a user, I want a clear checkout page summarizing my order, so that I can review and confirm before payment.
 
 **Acceptance Criteria:**
-- [ ] Shows order summary: seats, prices, total
-- [ ] Shows user info (name, email) pre-filled from profile
-- [ ] "Pay Now" button triggers Stripe payment
-- [ ] Back button returns to cart without losing cart state
-- [ ] Page is only accessible to authenticated users
+- [x] Shows order summary: seats, prices, total
+- [x] Shows user info (name, email) pre-filled from profile
+- [x] "Pay Now" button triggers Stripe payment
+- [x] Back button returns to cart without losing cart state
+- [x] Page is only accessible to authenticated users
 
 **Story Points:** 2
 **Priority:** 🔴 Critical
@@ -668,16 +668,16 @@
 
 ---
 
-### KTE-033 – Stripe Payment Intent API
+### KTE-033 – Stripe Payment Intent API ✅ DONE
 
 **User Story:** As a backend developer, I want a Stripe PaymentIntent endpoint, so that the frontend can securely initiate and confirm payments in test mode.
 
 **Acceptance Criteria:**
-- [ ] `POST /api/payments/create-intent` creates a Stripe PaymentIntent with the cart total
-- [ ] Returns `clientSecret` to the frontend
-- [ ] Stripe webhook `POST /api/payments/webhook` listens for `payment_intent.succeeded` event
-- [ ] Webhook signature is verified using Stripe signing secret
-- [ ] On success, ticket records are created and seat locks released
+- [x] `POST /api/payments/create-intent` creates a Stripe PaymentIntent with the cart total
+- [x] Returns `clientSecret` to the frontend
+- [x] Stripe webhook `POST /api/payments/webhook` listens for `payment_intent.succeeded` event
+- [x] Webhook signature is verified using Stripe signing secret
+- [x] On success, ticket records are created and seat locks released
 
 **Story Points:** 5
 **Priority:** 🔴 Critical
@@ -686,16 +686,16 @@
 
 ---
 
-### KTE-034 – Stripe Elements Integration (Frontend)
+### KTE-034 – Stripe Elements Integration (Frontend) ✅ DONE
 
 **User Story:** As a user, I want to enter my card details using Stripe Elements on the checkout page, so that my payment data is handled securely by Stripe.
 
 **Acceptance Criteria:**
-- [ ] Stripe.js loaded and `CardElement` rendered in the checkout form
-- [ ] On "Pay Now", `stripe.confirmCardPayment(clientSecret)` is called with the card element
-- [ ] Success redirects to the e-ticket confirmation page
-- [ ] Decline or error shows an inline error message with Stripe's error message
-- [ ] Loading spinner shown during payment processing
+- [x] Stripe.js loaded and `CardElement` rendered in the checkout form
+- [x] On "Pay Now", `stripe.confirmCardPayment(clientSecret)` is called with the card element
+- [x] Success redirects to the e-ticket confirmation page
+- [x] Decline or error shows an inline error message with Stripe's error message
+- [x] Loading spinner shown during payment processing
 
 **Story Points:** 3
 **Priority:** 🔴 Critical
@@ -704,16 +704,16 @@
 
 ---
 
-### KTE-035 – Weather Warning Banner
+### KTE-035 – Weather Warning Banner ✅ DONE
 
 **User Story:** As a user purchasing a seat in an uncovered sector, I want to see a weather warning if rain is forecast on match day, so that I can decide whether to switch to a covered sector.
 
 **Acceptance Criteria:**
-- [ ] Backend calls OpenWeatherMap API for the match city (Kecskemét) on match date
-- [ ] If precipitation > 0.5mm/h is forecast and the selected sector is uncovered, a warning banner is shown on the checkout page
-- [ ] Banner includes: rain probability, option to switch sector (link back to map)
-- [ ] Warning is not shown for covered sectors or if weather is clear
-- [ ] API call is cached in Redis for 1 hour to avoid rate limit issues
+- [x] Backend calls OpenWeatherMap API for the match city (Kecskemét) on match date
+- [x] If precipitation > 0.5mm/h is forecast and the selected sector is uncovered, a warning banner is shown on the checkout page
+- [x] Banner includes: rain probability, option to switch sector (link back to map)
+- [x] Warning is not shown for covered sectors or if weather is clear
+- [x] API call is cached in Redis for 1 hour to avoid rate limit issues
 
 **Story Points:** 3
 **Priority:** 🟡 Medium
@@ -722,15 +722,15 @@
 
 ---
 
-### KTE-036 – Order Confirmation Page
+### KTE-036 – Order Confirmation Page ✅ DONE
 
 **User Story:** As a user, I want to see a confirmation page after successful payment, so that I know my purchase was completed and my tickets are being prepared.
 
 **Acceptance Criteria:**
-- [ ] Confirmation page shows: order ID, purchased seats list, total paid
-- [ ] Message informs user that e-tickets will arrive by email
-- [ ] "Go to Profile" and "Back to Home" buttons present
-- [ ] Page is not accessible without a completed payment (guard via query param or state)
+- [x] Confirmation page shows: order ID, purchased seats list, total paid
+- [x] Message informs user that e-tickets will arrive by email
+- [x] "Go to Profile" and "Back to Home" buttons present
+- [x] Page is not accessible without a completed payment (guard via query param or state)
 
 **Story Points:** 2
 **Priority:** 🟠 High
@@ -739,16 +739,16 @@
 
 ---
 
-### KTE-037 – Payment Error & Retry Handling
+### KTE-037 – Payment Error & Retry Handling ✅ DONE
 
 **User Story:** As a user, I want clear error messages if my payment fails and the option to retry, so that I do not lose my seat reservation unnecessarily.
 
 **Acceptance Criteria:**
-- [ ] Payment decline shows specific Stripe decline message (e.g., "Insufficient funds")
-- [ ] Seat locks are extended by 2 minutes on payment failure to allow retry
-- [ ] "Try Again" button re-initiates payment without navigating away
-- [ ] After 3 consecutive failures, user is shown a support contact option
-- [ ] Network error is handled separately from card decline
+- [x] Payment decline shows specific Stripe decline message (e.g., "Insufficient funds")
+- [x] Seat locks are extended by 2 minutes on payment failure to allow retry
+- [x] "Try Again" button re-initiates payment without navigating away
+- [x] After 3 consecutive failures, user is shown a support contact option
+- [x] Network error is handled separately from card decline
 
 **Story Points:** 2
 **Priority:** 🟠 High
@@ -1318,14 +1318,14 @@
 | Epic | Total Stories | Completed | Progress |
 |---|---|---|---|
 | E1 – Foundation | 7 | 7 | 100% |
-| E2 – Landing Page | 5 | 3 | 60% |
+| E2 – Landing Page | 5 | 5 | 100% |
 | E3 – Stadium Map | 7 | 7 | 100% |
-| E4 – Cart & Reservation | 5 | 0 | 0% |
-| E5 – Auth & Profile | 7 | 0 | 0% |
-| E6 – Checkout & Payment | 6 | 0 | 0% |
+| E4 – Cart & Reservation | 5 | 5 | 100% |
+| E5 – Auth & Profile | 7 | 7 | 100% |
+| E6 – Checkout & Payment | 6 | 6 | 100% |
 | E7 – E-ticket & Email | 5 | 0 | 0% |
 | E8 – Loyalty System | 6 | 0 | 0% |
 | E9 – Season Pass Loan | 6 | 0 | 0% |
 | E10 – Advanced Features | 9 | 0 | 0% |
 | Post-POC | 5 | 0 | 0% |
-| **TOTAL** | **68** | **17** | **25%** |
+| **TOTAL** | **68** | **37** | **54%** |

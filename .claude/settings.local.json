@@ -21,7 +21,12 @@
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('jest', {}\\), indent=2\\)\\)\")",
       "Bash(npx tsc *)",
       "Bash(node_modules/.bin/tsc --noEmit)",
-      "Bash(grep -E \"^tsc$|jest|playwright\")"
+      "Bash(grep -E \"^tsc$|jest|playwright\")",
+      "Bash(mkdir *)",
+      "Bash(xargs grep *)",
+      "Bash(node -e \"const p = require\\('C:/Users/User/szakdolgozat/package.json'\\); console.log\\(JSON.stringify\\(Object.keys\\(p.dependencies || {}\\), null, 2\\)\\)\")",
+      "Bash(node -e \"const p = require\\('C:/Users/User/szakdolgozat/package.json'\\); console.log\\(JSON.stringify\\(p, null, 2\\)\\)\")",
+      "Bash(node *)"
     ]
   }
 }

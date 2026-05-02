@@ -1,3 +1,4 @@
 - [KTE Iteration 1 Test Strategy](project_kte_iteration1.md) — Risk map and test approach for KTE-001–KTE-007 (Foundation, no UI, API-level E2E)
 - [KTE Iteration 2 Test Strategy](project_kte_iteration2.md) — Playwright E2E + Jest integration tests for Landing Page, Stadium Map, seat lock flow
 - [KTE Iteration 3 Test Strategy](project_kte_iteration3.md) — Cart, Auth, Checkout, Profile E2E + updated config, fixtures, and stadium badge test
+- [KTE Iteration 4 Test Strategy](project_kte_iteration4.md) — E-ticket QR display, Loyalty Dashboard, tier discount checkout, Season Pass Loan backend tests

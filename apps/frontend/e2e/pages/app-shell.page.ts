@@ -29,11 +29,15 @@ export class AppShellPage {
   // Auth controls (authenticated state)
   readonly userMenuButton: Locator;
   readonly userMenuProfileLink: Locator;
+  readonly userMenuLoyaltyLink: Locator;
   readonly logoutMenuButton: Locator;
 
   // Mobile hamburger
   readonly hamburgerButton: Locator;
   readonly sidenav: Locator;
+
+  // Iteration 4: "Hűség" navigation link in toolbar and sidenav
+  readonly loyaltyNavLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -53,7 +57,12 @@ export class AppShellPage {
 
     // These only exist after opening the user menu
     this.userMenuProfileLink = page.getByRole('menuitem', { name: /profil/i });
+    // Iteration 4: "Hűség" item added to user menu for authenticated users
+    this.userMenuLoyaltyLink = page.getByRole('menuitem', { name: /hűség/i });
     this.logoutMenuButton = page.getByRole('menuitem', { name: /kijelentkezés/i });
+
+    // Iteration 4: toolbar nav link — only visible when authenticated
+    this.loyaltyNavLink = page.getByRole('link', { name: /hűség/i });
   }
 
   /** Opens the user menu (authenticated only). */

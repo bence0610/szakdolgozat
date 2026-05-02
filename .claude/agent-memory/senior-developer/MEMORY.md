@@ -2,4 +2,4 @@
 - [Iteration 1 scope](project_iteration_1_foundation.md) — KTE-001 - KTE-007 foundation tasks completed
 - [Iteration 2 scope](project_iteration_2_landing_map.md) — Landing (E2) + Stadium Map (E3) public screens delivered
 - [Iteration 3 scope](project_iteration_3_cart_auth_checkout.md) — Auth, cart NgRx, Stripe checkout, weather banner, profile (KTE-020..037)
-- [Iteration 4 scope](project_iteration_4_tickets_loyalty_loans.md) — Tickets/Loyalty/Pass-Loan decisions and idempotency contract
+- [Iteration 4 scope](project_iteration_4_tickets_loyalty_loans.md) — Tickets/Loyalty/Pass-Loan (KTE-038..054 except KTE-051)

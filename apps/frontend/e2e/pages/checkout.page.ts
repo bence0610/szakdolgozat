@@ -46,6 +46,13 @@ export class CheckoutPage {
   readonly summaryAside: Locator;
   readonly lockStatusCountdown: Locator;
 
+  // Iteration 4: DiscountBreakdownComponent (KTE-046)
+  // Rendered as a separate line in the summary aside when user has a
+  // discount-eligible tier (silver / gold / platinum).
+  readonly discountRow: Locator;
+  readonly discountLabel: Locator;
+  readonly discountAmount: Locator;
+
   // ---------- Confirmation page ----------
 
   readonly confirmationCard: Locator;
@@ -83,6 +90,12 @@ export class CheckoutPage {
 
     this.summaryAside = page.locator('aside.kte-checkout__summary');
     this.lockStatusCountdown = page.locator('.kte-checkout__lock-status');
+
+    // Iteration 4: DiscountBreakdown — rendered by kte-discount-breakdown
+    // inside the summary aside. Only visible for silver/gold/platinum tiers.
+    this.discountRow = page.locator('kte-discount-breakdown');
+    this.discountLabel = page.locator('.kte-checkout__discount-label');
+    this.discountAmount = page.locator('.kte-checkout__discount-amount');
 
     // Confirmation page
     this.confirmationCard = page.locator('mat-card.kte-confirmation__card');

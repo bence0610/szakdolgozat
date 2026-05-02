@@ -6,6 +6,7 @@
  * inline payloads.
  *
  * Updated for Iteration 3: auth, cart, payment, and weather fixtures added.
+ * Updated for Iteration 4: loyalty, ticket QR, season pass, and loan fixtures added.
  */
 
 // ---------------------------------------------------------------------------
@@ -353,4 +354,150 @@ export const WEATHER_CLEAR = {
   rainWarning: false,
   icon: 'clear',
   fallback: false,
+};
+
+// ---------------------------------------------------------------------------
+// Iteration 4: Loyalty (KTE-044 / KTE-045 / KTE-046)
+// ---------------------------------------------------------------------------
+
+export const LOYALTY_TRANSACTION_1 = {
+  id: 'tttttttt-0000-4000-8000-000000000001',
+  points: 100,
+  reason: 'Regisztrációs bónusz',
+  createdAt: new Date(Date.now() - 30 * 86_400_000).toISOString(),
+};
+
+export const LOYALTY_TRANSACTION_2 = {
+  id: 'tttttttt-0000-4000-8000-000000000002',
+  points: 50,
+  reason: 'Jegyvásárlás',
+  createdAt: new Date(Date.now() - 3_600_000).toISOString(),
+};
+
+/** GET /api/loyalty/me — bronze tier user, no tier upgrade */
+export const LOYALTY_ME_BRONZE = {
+  totalPoints: 120,
+  tier: 'bronze',
+  nextTierPoints: 500,
+  pointsToNextTier: 380,
+  tierUpgraded: false,
+  transactions: [LOYALTY_TRANSACTION_1, LOYALTY_TRANSACTION_2],
+};
+
+/** GET /api/loyalty/me — gold tier user with a fresh tier upgrade */
+export const LOYALTY_ME_GOLD_UPGRADED = {
+  totalPoints: 2100,
+  tier: 'gold',
+  nextTierPoints: 5000,
+  pointsToNextTier: 2900,
+  tierUpgraded: true,
+  transactions: [LOYALTY_TRANSACTION_1, LOYALTY_TRANSACTION_2],
+};
+
+/** GET /api/loyalty/me — gold tier user, no upgrade */
+export const LOYALTY_ME_GOLD = {
+  ...LOYALTY_ME_GOLD_UPGRADED,
+  tierUpgraded: false,
+};
+
+/** GET /api/loyalty/tiers */
+export const LOYALTY_TIERS = [
+  { tier: 'bronze', label: 'Bronz', minPoints: 0, discount: 0 },
+  { tier: 'silver', label: 'Ezüst', minPoints: 500, discount: 5 },
+  { tier: 'gold', label: 'Arany', minPoints: 2000, discount: 10 },
+  { tier: 'platinum', label: 'Platina', minPoints: 5000, discount: 15 },
+];
+
+// ---------------------------------------------------------------------------
+// Iteration 4: Auth variants for discount tests (KTE-046)
+// ---------------------------------------------------------------------------
+
+export const AUTH_USER_GOLD = {
+  ...AUTH_USER,
+  loyaltyTier: 'gold',
+  loyaltyPoints: 2100,
+};
+
+export const AUTH_RESPONSE_GOLD = {
+  ...AUTH_RESPONSE,
+  user: AUTH_USER_GOLD,
+};
+
+// ---------------------------------------------------------------------------
+// Iteration 4: Ticket QR endpoint (KTE-041)
+// ---------------------------------------------------------------------------
+
+export const TICKET_ID_1 = 'ffffffff-0000-4000-8000-000000000001';
+
+/**
+ * GET /api/tickets/:id/qr — returns base64 PNG data URI.
+ * The actual image content does not matter for UI assertions; only the
+ * img[data-testid="ticket-qr"] src attribute is validated.
+ */
+export const TICKET_QR_RESPONSE = {
+  ticketId: TICKET_ID_1,
+  qrDataUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+};
+
+// ---------------------------------------------------------------------------
+// Iteration 4: Season Passes & Loans (KTE-049 / KTE-051 / KTE-054)
+// ---------------------------------------------------------------------------
+
+export const SEASON_PASS_ID = 'pppppppp-0000-4000-8000-000000000001';
+export const LOAN_ID = 'llllllll-0000-4000-8000-000000000001';
+
+export const SEASON_PASS_ACTIVE = {
+  id: SEASON_PASS_ID,
+  matchId: null,
+  seatId: SEAT_ID_AVAILABLE,
+  section: 'A',
+  row: '1',
+  seatNumber: 5,
+  validFrom: new Date(Date.now() - 90 * 86_400_000).toISOString(),
+  validTo: new Date(Date.now() + 275 * 86_400_000).toISOString(),
+  status: 'active',
+};
+
+export const SEASON_PASSES_RESPONSE = {
+  items: [SEASON_PASS_ACTIVE],
+  total: 1,
+};
+
+export const SEASON_PASSES_EMPTY_RESPONSE = {
+  items: [],
+  total: 0,
+};
+
+/**
+ * Active loan attached to SEASON_PASS_ACTIVE — used for KTE-054 tests.
+ */
+export const LOAN_ACTIVE = {
+  id: LOAN_ID,
+  seasonPassId: SEASON_PASS_ID,
+  fromUserId: USER_ID,
+  toEmail: 'recipient@example.com',
+  matchId: MATCH_ID_1,
+  homeTeam: 'Kecskeméti TE',
+  awayTeam: 'Ferencvárosi TC',
+  kickoffAt: FUTURE_KICKOFF_1,
+  status: 'active',
+  qrDataUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+  createdAt: new Date(Date.now() - 3_600_000).toISOString(),
+};
+
+/** POST /api/season-passes/:id/loans — successful loan creation */
+export const LOAN_CREATE_RESPONSE = {
+  ...LOAN_ACTIVE,
+  status: 'pending',
+};
+
+/** DELETE /api/season-passes/:id/loans/:loanId — successful cancellation */
+export const LOAN_CANCEL_RESPONSE = {
+  ...LOAN_ACTIVE,
+  status: 'cancelled',
+};
+
+export const ACTIVE_LOANS_RESPONSE = {
+  items: [LOAN_ACTIVE],
+  total: 1,
 };
