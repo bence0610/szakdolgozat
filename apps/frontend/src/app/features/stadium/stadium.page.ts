@@ -38,6 +38,8 @@ import {
   selectSelectedSection,
 } from '../../state/seats';
 import { LockSeatResponse, SeatStatus } from '../../shared/models/seat.model';
+import { CartFacade } from '../../core/cart/cart.facade';
+import { MatchListItem } from '../../shared/models/match.model';
 import { MatchSelectorComponent } from './components/match-selector/match-selector.component';
 import { StadiumMapComponent } from './components/stadium-map/stadium-map.component';
 import { SeatGridComponent } from './components/seat-grid/seat-grid.component';
@@ -278,6 +280,7 @@ export class StadiumPage implements OnInit {
   private readonly bottomSheet = inject(MatBottomSheet);
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cart = inject(CartFacade);
 
   protected readonly matches$ = this.store.select(selectAllMatches);
   protected readonly matchId$ = this.store.select(selectSelectedMatchId);
@@ -297,6 +300,7 @@ export class StadiumPage implements OnInit {
   protected readonly isMobile = signal<boolean>(false);
 
   private currentMatchId: string | null = null;
+  private currentMatch: MatchListItem | null = null;
   private currentLock: LockSeatResponse | null = null;
   private mobileSheetRef: MatBottomSheetRef<SeatDetailBottomSheetComponent> | null = null;
   private lastSnackbarError: string | null = null;
@@ -328,6 +332,12 @@ export class StadiumPage implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((lock) => {
         this.currentLock = lock;
+      });
+
+    this.selectedMatch$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((match) => {
+        this.currentMatch = match ?? null;
       });
 
     // Mobile / desktop detection — drives bottom-sheet vs side-nav.
@@ -391,21 +401,68 @@ export class StadiumPage implements OnInit {
     this.store.dispatch(SeatsActions.toggleAccessibilityFilter());
   }
 
-  protected onLockSeat(seat: SeatStatus): void {
-    if (!this.currentMatchId) {
+  protected async onLockSeat(seat: SeatStatus): Promise<void> {
+    if (!this.currentMatchId || !this.currentMatch) {
       return;
     }
-    this.store.dispatch(SeatsActions.lockSeat({ matchId: this.currentMatchId, seatId: seat.id }));
+    if (this.cart.isFull()) {
+      this.snackBar.open(
+        'Egy kosárba legfeljebb 6 jegy vehető fel.',
+        'Bezárás',
+        { duration: 4000 },
+      );
+      return;
+    }
+    if (this.cart.has(seat.id)) {
+      this.snackBar.open('Ez a szék már a kosaradban van.', 'Bezárás', { duration: 3000 });
+      return;
+    }
+    try {
+      const item = await this.cart.add(seat, {
+        matchId: this.currentMatch.id,
+        homeTeam: this.currentMatch.homeTeam,
+        awayTeam: this.currentMatch.awayTeam,
+        kickoffAt: this.currentMatch.kickoffAt,
+      });
+      // Reflect the new lock in the seats slice so the UI repaints the seat as locked.
+      this.store.dispatch(
+        SeatsActions.lockSeatSuccess({
+          lock: {
+            matchId: item.matchId,
+            seatId: item.seatId,
+            ownerToken: item.ownerToken,
+            ttlSeconds: Math.max(
+              0,
+              Math.round((item.lockExpiresAtMs - Date.now()) / 1000),
+            ),
+            expiresAt: new Date(item.lockExpiresAtMs).toISOString(),
+          },
+        }),
+      );
+      this.snackBar.open('A szék hozzáadva a kosárhoz.', 'Kosár', {
+        duration: 4000,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'A szék zárolása sikertelen.';
+      this.snackBar.open(message, 'Bezárás', { duration: 5000 });
+    }
   }
 
-  protected onReleaseLock(): void {
+  protected async onReleaseLock(): Promise<void> {
     if (!this.currentLock) {
+      return;
+    }
+    const seatId = this.currentLock.seatId;
+    if (this.cart.has(seatId)) {
+      await this.cart.remove(seatId);
+      this.store.dispatch(SeatsActions.unlockSeatSuccess({ seatId }));
       return;
     }
     this.store.dispatch(
       SeatsActions.unlockSeat({
         matchId: this.currentLock.matchId,
-        seatId: this.currentLock.seatId,
+        seatId,
         ownerToken: this.currentLock.ownerToken,
       }),
     );

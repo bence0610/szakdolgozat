@@ -70,6 +70,32 @@
     flex: 1 1 auto;
   }
 
+  &__user {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--kte-spacing-2);
+  }
+
+  &__user-label {
+    @media (max-width: 720px) {
+      display: none;
+    }
+  }
+
+  &__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--kte-color-accent);
+    color: var(--kte-color-primary);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+
   &__main {
     flex: 1 1 auto;
     padding: var(--kte-spacing-6);

@@ -1,9 +1,11 @@
 /**
- * Canonical API mock payloads for Iteration 2 E2E tests.
+ * Canonical API mock payloads for KTE Jegyportál E2E tests.
  *
  * Keeping all fixtures in one place makes it trivial to update them when
  * the DTOs change — test files import from here instead of defining
  * inline payloads.
+ *
+ * Updated for Iteration 3: auth, cart, payment, and weather fixtures added.
  */
 
 // ---------------------------------------------------------------------------
@@ -172,4 +174,183 @@ export const LOCK_CONFLICT_BODY = {
   statusCode: 409,
   message: `Seat ${SEAT_ID_AVAILABLE} for match ${MATCH_ID_1} is already locked. Please pick a different seat.`,
   error: 'Conflict',
+};
+
+// ---------------------------------------------------------------------------
+// Auth
+// ---------------------------------------------------------------------------
+
+export const USER_ID = 'eeeeeeee-0000-4000-8000-000000000001';
+
+export const AUTH_USER = {
+  id: USER_ID,
+  email: 'test@kte.hu',
+  firstName: 'Teszt',
+  lastName: 'Felhasználó',
+  role: 'fan',
+  loyaltyTier: 'bronze',
+  loyaltyPoints: 120,
+};
+
+/** Full AuthResponse returned by /auth/login and /auth/register */
+export const AUTH_RESPONSE = {
+  accessToken: 'fake-access-token',
+  refreshToken: 'fake-refresh-token',
+  expiresIn: 900,
+  user: AUTH_USER,
+};
+
+/** /users/me extended profile */
+export const USER_PROFILE = {
+  id: USER_ID,
+  email: 'test@kte.hu',
+  firstName: 'Teszt',
+  lastName: 'Felhasználó',
+  phoneNumber: '+36301234567',
+  role: 'fan',
+  loyaltyTier: 'bronze',
+  loyaltyPoints: 120,
+  emailVerified: true,
+  twoFactorEnabled: false,
+  lastLoginAt: new Date(Date.now() - 86_400_000).toISOString(),
+  createdAt: new Date(Date.now() - 30 * 86_400_000).toISOString(),
+};
+
+/** Active ticket in the /users/me/tickets response */
+export const TICKET_ACTIVE = {
+  id: 'ffffffff-0000-4000-8000-000000000001',
+  matchId: MATCH_ID_1,
+  homeTeam: 'Kecskeméti TE',
+  awayTeam: 'Ferencvárosi TC',
+  kickoffAt: FUTURE_KICKOFF_1,
+  venue: 'Széktói Stadion, Kecskemét',
+  section: 'A',
+  row: '1',
+  seatNumber: 5,
+  category: 'standard',
+  status: 'paid',
+  pricePaid: 3500,
+  currency: 'HUF',
+  qrCode: 'QR-TEST-0001',
+  purchasedAt: new Date(Date.now() - 3_600_000).toISOString(),
+  isActive: true,
+};
+
+/** Past ticket */
+export const TICKET_PAST = {
+  id: 'ffffffff-0000-4000-8000-000000000002',
+  matchId: MATCH_ID_2,
+  homeTeam: 'Kecskeméti TE',
+  awayTeam: 'Puskás Akadémia',
+  kickoffAt: new Date(Date.now() - 7 * 86_400_000).toISOString(),
+  venue: 'Széktói Stadion, Kecskemét',
+  section: 'B',
+  row: '3',
+  seatNumber: 12,
+  category: 'standard',
+  status: 'used',
+  pricePaid: 3000,
+  currency: 'HUF',
+  qrCode: 'QR-TEST-0002',
+  purchasedAt: new Date(Date.now() - 8 * 86_400_000).toISOString(),
+  isActive: false,
+};
+
+export const TICKETS_PAGE_RESPONSE = {
+  items: [TICKET_ACTIVE, TICKET_PAST],
+  total: 2,
+  limit: 50,
+  offset: 0,
+};
+
+export const TICKETS_EMPTY_RESPONSE = {
+  items: [],
+  total: 0,
+  limit: 50,
+  offset: 0,
+};
+
+// ---------------------------------------------------------------------------
+// Cart (pre-seeded session state for cart/checkout tests)
+// ---------------------------------------------------------------------------
+
+export const CART_ITEM_1 = {
+  seatId: SEAT_ID_AVAILABLE,
+  matchId: MATCH_ID_1,
+  homeTeam: 'Kecskeméti TE',
+  awayTeam: 'Ferencvárosi TC',
+  kickoffAt: FUTURE_KICKOFF_1,
+  section: 'A',
+  row: '1',
+  seatNumber: 5,
+  category: 'standard',
+  price: 3500,
+  ownerToken: OWNER_TOKEN,
+  lockExpiresAtMs: Date.now() + 280_000,
+  addedAtMs: Date.now() - 20_000,
+};
+
+/**
+ * SessionStorage payload that pre-seeds the cart with one item.
+ * Inject via page.evaluate() before navigating, e.g.:
+ *   await seedCart(page, [CART_ITEM_1]);
+ */
+export const CART_SESSION_PAYLOAD_1 = {
+  version: 1,
+  matchId: MATCH_ID_1,
+  items: [CART_ITEM_1],
+};
+
+// ---------------------------------------------------------------------------
+// Payment
+// ---------------------------------------------------------------------------
+
+export const PAYMENT_INTENT_ID = 'pi_test_000000000000001';
+
+export const PAYMENT_INTENT_RESPONSE = {
+  paymentIntentId: PAYMENT_INTENT_ID,
+  clientSecret: 'pi_test_000000000000001_secret_abc',
+  currency: 'huf',
+  amount: 3500,
+  lineItems: [
+    {
+      seatId: SEAT_ID_AVAILABLE,
+      section: 'A',
+      row: '1',
+      seatNumber: 5,
+      price: 3500,
+    },
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// Weather
+// ---------------------------------------------------------------------------
+
+export const WEATHER_RAIN_WARNING = {
+  matchId: MATCH_ID_1,
+  city: 'Kecskemét',
+  forecastFor: FUTURE_KICKOFF_1,
+  summary: 'Eső várható',
+  temperatureCelsius: 14,
+  precipitationMmPerHour: 3.2,
+  precipitationProbability: 0.85,
+  windSpeedMs: 5.1,
+  rainWarning: true,
+  icon: 'rain',
+  fallback: false,
+};
+
+export const WEATHER_CLEAR = {
+  matchId: MATCH_ID_1,
+  city: 'Kecskemét',
+  forecastFor: FUTURE_KICKOFF_1,
+  summary: 'Derült',
+  temperatureCelsius: 22,
+  precipitationMmPerHour: 0,
+  precipitationProbability: 0.05,
+  windSpeedMs: 2.0,
+  rainWarning: false,
+  icon: 'clear',
+  fallback: false,
 };

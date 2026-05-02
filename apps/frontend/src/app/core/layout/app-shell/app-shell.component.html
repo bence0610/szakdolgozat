@@ -7,7 +7,7 @@
     class="kte-shell__sidenav"
   >
     <mat-nav-list>
-      @for (item of navItems(); track item.route) {
+      @for (item of visibleNavItems(); track item.route) {
         <a
           mat-list-item
           [routerLink]="item.route"
@@ -17,6 +17,27 @@
         >
           <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
           <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+      @if (isAuthenticated()) {
+        <a
+          mat-list-item
+          routerLink="/profile"
+          [routerLinkActive]="'kte-active'"
+          (click)="closeSidenav()"
+        >
+          <mat-icon matListItemIcon>person</mat-icon>
+          <span matListItemTitle>Profil</span>
+        </a>
+      } @else {
+        <a
+          mat-list-item
+          routerLink="/login"
+          [routerLinkActive]="'kte-active'"
+          (click)="closeSidenav()"
+        >
+          <mat-icon matListItemIcon>login</mat-icon>
+          <span matListItemTitle>Bejelentkezés</span>
         </a>
       }
     </mat-nav-list>
@@ -40,7 +61,7 @@
       </a>
 
       <nav class="kte-shell__nav">
-        @for (item of navItems(); track item.route) {
+        @for (item of visibleNavItems(); track item.route) {
           <a
             mat-button
             [routerLink]="item.route"
@@ -54,10 +75,44 @@
 
       <span class="kte-shell__spacer"></span>
 
-      <a mat-stroked-button routerLink="/checkout">
-        <mat-icon>payments</mat-icon>
-        Pénztár
+      <a
+        mat-icon-button
+        routerLink="/cart"
+        aria-label="Kosár"
+        [matBadge]="cartCount() > 0 ? cartCount() : null"
+        matBadgeColor="accent"
+        matBadgeSize="small"
+      >
+        <mat-icon>shopping_cart</mat-icon>
       </a>
+
+      @if (isAuthenticated()) {
+        <button
+          mat-button
+          [matMenuTriggerFor]="userMenu"
+          class="kte-shell__user"
+          aria-label="Felhasználói menü"
+        >
+          <span class="kte-shell__avatar">{{ userInitials() }}</span>
+          <span class="kte-shell__user-label">{{ user()?.firstName }}</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <a mat-menu-item routerLink="/profile">
+            <mat-icon>person</mat-icon>
+            <span>Profil</span>
+          </a>
+          <button mat-menu-item type="button" (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Kijelentkezés</span>
+          </button>
+        </mat-menu>
+      } @else {
+        <a mat-stroked-button routerLink="/login">
+          <mat-icon>login</mat-icon>
+          Bejelentkezés
+        </a>
+      }
     </mat-toolbar>
 
     <main class="kte-shell__main">

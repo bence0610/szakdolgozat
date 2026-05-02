@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard, guestGuard } from './core/auth/auth.guard';
 import { AppShellComponent } from './core/layout/app-shell/app-shell.component';
 
 export const APP_ROUTES: Routes = [
@@ -27,18 +28,42 @@ export const APP_ROUTES: Routes = [
       },
       {
         path: 'checkout',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/checkout/checkout.page').then((m) => m.CheckoutPage),
         title: 'Fizetés',
       },
       {
+        path: 'checkout/confirmation',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/checkout/confirmation.page').then((m) => m.ConfirmationPage),
+        title: 'Rendelés visszaigazolva',
+      },
+      {
+        path: 'login',
+        canActivate: [guestGuard],
+        loadComponent: () =>
+          import('./features/auth/login.page').then((m) => m.LoginPage),
+        title: 'Bejelentkezés',
+      },
+      {
+        path: 'register',
+        canActivate: [guestGuard],
+        loadComponent: () =>
+          import('./features/auth/register.page').then((m) => m.RegisterPage),
+        title: 'Regisztráció',
+      },
+      {
         path: 'profile',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/profile/profile.page').then((m) => m.ProfilePage),
         title: 'Profil',
       },
       {
         path: 'admin',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('./features/admin/admin.page').then((m) => m.AdminPage),
         title: 'Admin',

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { StadiumPage } from './pages/stadium.page';
+import { AppShellPage } from './pages/app-shell.page';
 import {
   MATCH_LIST,
   MATCH_LIST_ITEM_1,
@@ -30,6 +31,7 @@ import {
  *  8. Accessibility toggle filters the seat grid to accessible seats only
  *  9. Empty state renders when no matchId is provided in the URL
  * 10. Match selector navigation updates the URL query param
+ * 11. (Iteration 3) Cart badge increments to 1 after a successful seat lock
  */
 
 test.describe('Stadium Page – /stadium', () => {
@@ -361,6 +363,49 @@ test.describe('Stadium Page – /stadium', () => {
     await stadium.selectMatch('Puskás');
 
     await expect(page).toHaveURL(new RegExp(`matchId=${MATCH_ID_2}`));
+  });
+
+  // ---------------------------------------------------------------------------
+  // 11. Cart badge — Iteration 3
+  // ---------------------------------------------------------------------------
+
+  test('should increment the cart badge count to 1 after a successful "Kosárba" lock', async ({
+    page,
+  }) => {
+    // Stub the refresh endpoint so the user appears unauthenticated (no session)
+    // — the cart still works without auth.
+    await page.route('**/auth/refresh', (route) =>
+      route.fulfill({ status: 401, body: 'Unauthorized' }),
+    );
+
+    await page.route(
+      `**/api/matches/${MATCH_ID_1}/seats/${SEAT_ID_AVAILABLE}/lock`,
+      (route) => {
+        if (route.request().method() === 'POST') {
+          route.fulfill({
+            status: 201,
+            contentType: 'application/json',
+            body: JSON.stringify(LOCK_SUCCESS_RESPONSE),
+          });
+        } else {
+          route.continue();
+        }
+      },
+    );
+
+    const stadium = new StadiumPage(page);
+    const shell = new AppShellPage(page);
+    await stadium.goto(MATCH_ID_1);
+    await stadium.sectorA.click();
+    await stadium.availableSeats.first().click();
+    await stadium.kosarbaButton.click();
+
+    // Wait for the lock success UI to confirm the CartFacade.add() resolved
+    await expect(stadium.lockCountdownHeader).toBeVisible({ timeout: 5000 });
+
+    // The NgRx cart now has one item — the badge should show "1"
+    const count = await shell.getCartCount();
+    expect(count).toBe(1);
   });
 
   // ---------------------------------------------------------------------------

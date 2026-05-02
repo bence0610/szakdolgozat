@@ -6,10 +6,13 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { APP_ROUTES } from './app.routes';
+import { provideAuthInitializer } from './core/auth/auth.initializer';
 import { apiBaseUrlInterceptor } from './core/interceptors/api-base-url.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { provideMatchesFeature } from './state/matches';
 import { provideSeatsFeature } from './state/seats';
+import { provideCartFeature } from './state/cart';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,11 +23,15 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' }),
     ),
     provideAnimations(),
-    provideHttpClient(withInterceptors([apiBaseUrlInterceptor, errorInterceptor])),
+    provideHttpClient(
+      withInterceptors([apiBaseUrlInterceptor, authInterceptor, errorInterceptor]),
+    ),
     provideStore({}),
     provideEffects([]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideMatchesFeature(),
     provideSeatsFeature(),
+    provideCartFeature(),
+    provideAuthInitializer(),
   ],
 };
