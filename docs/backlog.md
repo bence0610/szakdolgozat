@@ -2,7 +2,7 @@
 
 **Project:** KTE Jegyportál (Kecskeméti TE Official Ticketing Platform)
 **Status:** In Progress
-**Overall Completion:** 79% (54 / 68 tasks completed)
+**Overall Completion:** 93% (63 / 68 tasks completed)
 
 ---
 
@@ -12,8 +12,8 @@
 |---|---|
 | Total Epics | 10 |
 | Total User Stories | 68 |
-| Completed Stories | 54 |
-| Completion | 79% |
+| Completed Stories | 63 |
+| Completion | 93% |
 
 ---
 
@@ -30,7 +30,7 @@
 | E7 | E-ticket Generation & Email Delivery | 5 | DONE |
 | E8 | Loyalty Points System | 6 | DONE |
 | E9 | Season Pass Loan Flow | 6 | DONE |
-| E10 | Advanced Features (Waitlist, AI Chatbot, Weather, Admin) | 14 | Pending |
+| E10 | Advanced Features (Waitlist, AI Chatbot, Weather, Admin) | 14 | DONE |
 
 ---
 
@@ -42,7 +42,7 @@
 | Iteration 2 – Public Landing & Map | E2, E3 | DONE |
 | Iteration 3 – Cart, Auth & Checkout | E4, E5, E6 | DONE |
 | Iteration 4 – Tickets, Loyalty & Pass Loan | E7, E8, E9 | DONE |
-| Iteration 5 – Advanced Features | E10 | Pending |
+| Iteration 5 – Advanced Features | E10 | DONE |
 
 ---
 
@@ -1089,16 +1089,16 @@
 
 ---
 
-### KTE-055 – Waitlist System (Backend)
+### KTE-055 – Waitlist System (Backend) ✅ DONE
 
 **User Story:** As a backend developer, I want a waitlist state machine for sold-out matches, so that users can queue for seats that become available.
 
 **Acceptance Criteria:**
-- [ ] `Waitlist` entity: userId, matchId, position, status (waiting/notified/claimed/expired)
-- [ ] `POST /api/waitlist/:matchId/join` adds user to waitlist (if match is sold out)
-- [ ] When a seat is released (lock expiry or loan), the first waitlisted user is notified by email
-- [ ] Notification email contains a 10-minute claim link
-- [ ] If claim link expires, next waitlisted user is notified automatically
+- [x] `Waitlist` entity: userId, matchId, position, status (waiting/notified/claimed/expired)
+- [x] `POST /api/waitlist/:matchId/join` adds user to waitlist (if match is sold out)
+- [x] When a seat is released (lock expiry or loan), the first waitlisted user is notified by email
+- [x] Notification email contains a 10-minute claim link
+- [x] If claim link expires, next waitlisted user is notified automatically
 
 **Story Points:** 5
 **Priority:** 🟠 High
@@ -1107,15 +1107,15 @@
 
 ---
 
-### KTE-056 – Waitlist Notification Timer (Redis)
+### KTE-056 – Waitlist Notification Timer (Redis) ✅ DONE
 
 **User Story:** As a developer, I want the 10-minute claim window enforced by Redis TTL, so that seat availability is offered to the next user if unclaimed.
 
 **Acceptance Criteria:**
-- [ ] When user is notified, a Redis key `waitlist:claim:{userId}:{matchId}` is set with 600s TTL
-- [ ] Claim API `POST /api/waitlist/:matchId/claim` validates the Redis key exists before proceeding
-- [ ] On TTL expiry (Redis keyspace notification), next waitlisted user is notified
-- [ ] Redis keyspace notifications enabled in Redis config
+- [x] When user is notified, a Redis key `waitlist:claim:{userId}:{matchId}` is set with 600s TTL
+- [x] Claim API `POST /api/waitlist/:matchId/claim` validates the Redis key exists before proceeding
+- [x] On TTL expiry (Redis keyspace notification), next waitlisted user is notified
+- [x] Redis keyspace notifications enabled in Redis config
 
 **Story Points:** 3
 **Priority:** 🟠 High
@@ -1124,15 +1124,15 @@
 
 ---
 
-### KTE-057 – Waitlist UI Integration
+### KTE-057 – Waitlist UI Integration ✅ DONE
 
 **User Story:** As a user browsing a sold-out match, I want to see a "Join Waitlist" button instead of "Buy Tickets", so that I can register my interest for any released seats.
 
 **Acceptance Criteria:**
-- [ ] "Buy Tickets" button replaced with "Join Waitlist" when `match.status === 'sold_out'`
-- [ ] Clicking "Join Waitlist" requires authentication (redirect to login if guest)
-- [ ] Success toast: "You are #N on the waitlist for [Match]"
-- [ ] Waitlist position shown on the user profile page
+- [x] "Buy Tickets" button replaced with "Join Waitlist" when `match.status === 'sold_out'`
+- [x] Clicking "Join Waitlist" requires authentication (redirect to login if guest)
+- [x] Success toast: "You are #N on the waitlist for [Match]"
+- [x] Waitlist position shown on the user profile page
 
 **Story Points:** 2
 **Priority:** 🟠 High
@@ -1141,16 +1141,16 @@
 
 ---
 
-### KTE-058 – AI Chatbot Backend (Claude API)
+### KTE-058 – AI Chatbot Backend (Claude API) ✅ DONE
 
 **User Story:** As a backend developer, I want a chatbot endpoint powered by the Claude API, so that the frontend widget can relay user questions and receive context-aware answers.
 
 **Acceptance Criteria:**
-- [ ] `POST /api/chatbot/message` accepts `{ message: string, sessionContext: object }` payload
-- [ ] Backend constructs a system prompt including: current match schedule, user profile (if authenticated), loyalty tier
-- [ ] Claude API called with `claude-sonnet-4-20250514` model
-- [ ] Response streamed to frontend using Server-Sent Events (SSE) or returned as JSON
-- [ ] Rate limited to 20 requests per user per minute (Redis)
+- [x] `POST /api/chatbot/message` accepts `{ message: string, sessionContext: object }` payload
+- [x] Backend constructs a system prompt including: current match schedule, user profile (if authenticated), loyalty tier
+- [x] Claude API called with `claude-sonnet-4-20250514` model
+- [x] Response streamed to frontend using Server-Sent Events (SSE) or returned as JSON
+- [x] Rate limited to 20 requests per user per minute (Redis)
 
 **Story Points:** 5
 **Priority:** 🟡 Medium
@@ -1159,17 +1159,17 @@
 
 ---
 
-### KTE-059 – Floating Chatbot Widget (Frontend)
+### KTE-059 – Floating Chatbot Widget (Frontend) ✅ DONE
 
 **User Story:** As a user, I want a floating chatbot widget in the bottom-right corner, so that I can ask questions about tickets, loyalty, and the stadium without leaving the current page.
 
 **Acceptance Criteria:**
-- [ ] Widget visible on all pages as a floating button (chat bubble icon)
-- [ ] Clicking the button opens a chat panel (minimizable)
-- [ ] User can type a message and receive an AI response
-- [ ] Responses rendered as markdown (basic: bold, lists)
-- [ ] Chat history cleared on page reload (GDPR: not persisted)
-- [ ] Widget does not interfere with page content layout
+- [x] Widget visible on all pages as a floating button (chat bubble icon)
+- [x] Clicking the button opens a chat panel (minimizable)
+- [x] User can type a message and receive an AI response
+- [x] Responses rendered as markdown (basic: bold, lists)
+- [x] Chat history cleared on page reload (GDPR: not persisted)
+- [x] Widget does not interfere with page content layout
 
 **Story Points:** 3
 **Priority:** 🟡 Medium
@@ -1178,16 +1178,16 @@
 
 ---
 
-### KTE-060 – Weather API Service (Backend)
+### KTE-060 – Weather API Service (Backend) ✅ DONE
 
 **User Story:** As a backend developer, I want a `WeatherService` that fetches weather forecasts from OpenWeatherMap, so that the checkout page can warn users about rain in uncovered sectors.
 
 **Acceptance Criteria:**
-- [ ] `WeatherService.getForecast(date, city)` returns precipitation forecast for Kecskemét
-- [ ] Result cached in Redis for 1 hour with key `weather:{city}:{date}`
-- [ ] Returns `{ willRain: boolean, probability: number, description: string }`
-- [ ] API key loaded from environment variables
-- [ ] Graceful fallback (no warning shown) if API is unavailable
+- [x] `WeatherService.getForecast(date, city)` returns precipitation forecast for Kecskemét
+- [x] Result cached in Redis for 1 hour with key `weather:{city}:{date}`
+- [x] Returns `{ willRain: boolean, probability: number, description: string }`
+- [x] API key loaded from environment variables
+- [x] Graceful fallback (no warning shown) if API is unavailable
 
 **Story Points:** 2
 **Priority:** 🟡 Medium
@@ -1196,16 +1196,16 @@
 
 ---
 
-### KTE-061 – Admin Dashboard – Seat Occupancy Heatmap
+### KTE-061 – Admin Dashboard – Seat Occupancy Heatmap ✅ DONE
 
 **User Story:** As an admin, I want a real-time seat occupancy heatmap in the admin dashboard, so that I can monitor stadium fill rate per match at a glance.
 
 **Acceptance Criteria:**
-- [ ] Admin dashboard accessible at `/admin` (role-based route guard: `admin` role required)
-- [ ] Heatmap renders the stadium SVG with color intensity based on occupancy percentage per sector
-- [ ] Match selector dropdown allows switching between upcoming matches
-- [ ] Data fetched from `GET /api/admin/matches/:id/occupancy`
-- [ ] Heatmap auto-refreshes every 60 seconds
+- [x] Admin dashboard accessible at `/admin` (role-based route guard: `admin` role required)
+- [x] Heatmap renders the stadium SVG with color intensity based on occupancy percentage per sector
+- [x] Match selector dropdown allows switching between upcoming matches
+- [x] Data fetched from `GET /api/admin/matches/:id/occupancy`
+- [x] Heatmap auto-refreshes every 60 seconds
 
 **Story Points:** 5
 **Priority:** 🟡 Medium
@@ -1214,16 +1214,16 @@
 
 ---
 
-### KTE-062 – Admin Dashboard – Revenue Stats
+### KTE-062 – Admin Dashboard – Revenue Stats ✅ DONE
 
 **User Story:** As an admin, I want to see revenue statistics in the dashboard, so that I can track total sales and top-performing matches.
 
 **Acceptance Criteria:**
-- [ ] Revenue stats section shows: total revenue today, total revenue this month, top 3 matches by revenue
-- [ ] Data fetched from `GET /api/admin/stats/revenue`
-- [ ] Stats displayed as cards with trend indicators (vs. previous period)
-- [ ] Endpoint protected by admin role
-- [ ] Data is accurate to last completed payment (no pending payments counted)
+- [x] Revenue stats section shows: total revenue today, total revenue this month, top 3 matches by revenue
+- [x] Data fetched from `GET /api/admin/stats/revenue`
+- [x] Stats displayed as cards with trend indicators (vs. previous period)
+- [x] Endpoint protected by admin role
+- [x] Data is accurate to last completed payment (no pending payments counted)
 
 **Story Points:** 3
 **Priority:** 🟡 Medium
@@ -1232,16 +1232,16 @@
 
 ---
 
-### KTE-063 – Admin Role & Role Guard
+### KTE-063 – Admin Role & Role Guard ✅ DONE
 
 **User Story:** As a developer, I want an admin role system with backend guard and frontend route guard, so that admin-only endpoints and pages are protected from regular users.
 
 **Acceptance Criteria:**
-- [ ] `User.role` field with values `user` | `admin`
-- [ ] `RolesGuard` NestJS guard checks role on protected admin endpoints
-- [ ] Admin seed account created by database seeder
-- [ ] Angular `AdminGuard` redirects non-admin users to home with a "Not Authorized" toast
-- [ ] Role claim included in JWT payload
+- [x] `User.role` field with values `user` | `admin`
+- [x] `RolesGuard` NestJS guard checks role on protected admin endpoints
+- [x] Admin seed account created by database seeder
+- [x] Angular `AdminGuard` redirects non-admin users to home with a "Not Authorized" toast
+- [x] Role claim included in JWT payload
 
 **Story Points:** 2
 **Priority:** 🟡 Medium
@@ -1326,6 +1326,6 @@
 | E7 – E-ticket & Email | 5 | 5 | 100% |
 | E8 – Loyalty System | 6 | 6 | 100% |
 | E9 – Season Pass Loan | 6 | 6 | 100% |
-| E10 – Advanced Features | 9 | 0 | 0% |
+| E10 – Advanced Features | 9 | 9 | 100% |
 | Post-POC | 5 | 0 | 0% |
-| **TOTAL** | **68** | **54** | **79%** |
+| **TOTAL** | **68** | **63** | **93%** |
