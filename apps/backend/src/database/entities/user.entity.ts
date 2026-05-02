@@ -60,6 +60,9 @@ export class User extends BaseEntity {
   @Column({ type: 'timestamp', nullable: true, name: 'last_login_at' })
   lastLoginAt?: Date;
 
+  @Column({ type: 'timestamp', nullable: true, name: 'profile_completed_at' })
+  profileCompletedAt?: Date;
+
   @Column({ type: 'boolean', default: true, name: 'is_active' })
   isActive!: boolean;
 

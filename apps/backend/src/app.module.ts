@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { configurations, envValidationSchema } from './config';
 import { DatabaseModule } from './database/database.module';
 import { RedisModule } from './redis/redis.module';
@@ -14,6 +15,10 @@ import { WaitlistModule } from './modules/waitlist/waitlist.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { ChatbotModule } from './modules/chatbot/chatbot.module';
 import { HealthModule } from './modules/health/health.module';
+import { EmailModule } from './modules/email/email.module';
+import { QrModule } from './modules/qr/qr.module';
+import { CheckoutModule } from './modules/checkout/checkout.module';
+import { SeasonPassesModule } from './modules/season-passes/season-passes.module';
 
 @Module({
   imports: [
@@ -28,8 +33,11 @@ import { HealthModule } from './modules/health/health.module';
       },
       envFilePath: ['.env'],
     }),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     RedisModule,
+    EmailModule,
+    QrModule,
     HealthModule,
     AuthModule,
     UsersModule,
@@ -40,6 +48,8 @@ import { HealthModule } from './modules/health/health.module';
     WaitlistModule,
     AdminModule,
     ChatbotModule,
+    CheckoutModule,
+    SeasonPassesModule,
   ],
 })
 export class AppModule {}

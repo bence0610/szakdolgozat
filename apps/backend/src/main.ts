@@ -3,6 +3,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as express from 'express';
 import { AppModule } from './app.module';
 import { AppConfig } from './config';
 import { GlobalHttpExceptionFilter } from './common/filters/http-exception.filter';
@@ -11,7 +12,24 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+    bodyParser: false,
   });
+
+  // Stripe requires the *raw* request body to verify webhook signatures.
+  // Apply the raw parser only on /api/webhooks/stripe and JSON parsing
+  // everywhere else.
+  app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), (
+    req: express.Request & { rawBody?: Buffer },
+    _res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    if (Buffer.isBuffer(req.body)) {
+      req.rawBody = req.body;
+    }
+    next();
+  });
+  app.use(express.json({ limit: '1mb' }));
+  app.use(express.urlencoded({ extended: true }));
 
   const configService = app.get(ConfigService);
   const appConfig = configService.getOrThrow<AppConfig>('app');
@@ -51,6 +69,8 @@ async function bootstrap(): Promise<void> {
     .addTag('Waitlist')
     .addTag('Admin')
     .addTag('Chatbot')
+    .addTag('Checkout')
+    .addTag('SeasonPasses')
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

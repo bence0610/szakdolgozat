@@ -1,2 +1,3 @@
 - [User profile](user_profile.md) — kristof.laczkovich@gmail.com, KTE Jegyportál szakdolgozat
 - [Iteration 1 scope](project_iteration_1_foundation.md) — KTE-001 - KTE-007 foundation tasks completed
+- [Iteration 4 scope](project_iteration_4_tickets_loyalty_loans.md) — Tickets/Loyalty/Pass-Loan decisions and idempotency contract

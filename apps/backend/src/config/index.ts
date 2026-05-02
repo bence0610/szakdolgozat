@@ -5,6 +5,9 @@ import jwtConfig from './jwt.config';
 import stripeConfig from './stripe.config';
 import anthropicConfig from './anthropic.config';
 import mailConfig from './mail.config';
+import qrConfig from './qr.config';
+import loyaltyConfig from './loyalty.config';
+import cronConfig from './cron.config';
 
 export const configurations = [
   appConfig,
@@ -14,6 +17,9 @@ export const configurations = [
   stripeConfig,
   anthropicConfig,
   mailConfig,
+  qrConfig,
+  loyaltyConfig,
+  cronConfig,
 ];
 
 export * from './app.config';
@@ -23,4 +29,7 @@ export * from './jwt.config';
 export * from './stripe.config';
 export * from './anthropic.config';
 export * from './mail.config';
+export * from './qr.config';
+export * from './loyalty.config';
+export * from './cron.config';
 export * from './env.validation';

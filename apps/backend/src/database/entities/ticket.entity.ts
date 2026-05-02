@@ -11,6 +11,7 @@ export enum TicketStatus {
   CANCELLED = 'cancelled',
   REFUNDED = 'refunded',
   USED = 'used',
+  EXPIRED = 'expired',
 }
 
 export enum TicketSource {
@@ -24,6 +25,7 @@ export enum TicketSource {
 @Index('idx_tickets_user', ['userId'])
 @Index('idx_tickets_status', ['status'])
 @Index('idx_tickets_payment_intent', ['stripePaymentIntentId'])
+@Index('idx_tickets_match_status', ['matchId', 'status'])
 export class Ticket extends BaseEntity {
   @Column({ type: 'varchar', length: 36, name: 'match_id' })
   matchId!: string;
@@ -52,11 +54,26 @@ export class Ticket extends BaseEntity {
   @Column({ type: 'varchar', length: 64, unique: true, name: 'qr_code' })
   qrCode!: string;
 
+  @Column({ type: 'varchar', length: 36, unique: true, name: 'qr_jti' })
+  qrJti!: string;
+
   @Column({ type: 'varchar', length: 255, nullable: true, name: 'stripe_payment_intent_id' })
   stripePaymentIntentId?: string;
 
   @Column({ type: 'timestamp', nullable: true, name: 'used_at' })
   usedAt?: Date;
+
+  @Column({ type: 'timestamp', nullable: true, name: 'scanned_at' })
+  scannedAt?: Date;
+
+  @Column({ type: 'varchar', length: 36, nullable: true, name: 'scanned_by_user_id' })
+  scannedByUserId?: string;
+
+  @Column({ type: 'timestamp', nullable: true, name: 'expired_at' })
+  expiredAt?: Date;
+
+  @Column({ type: 'timestamp', nullable: true, name: 'confirmation_email_sent_at' })
+  confirmationEmailSentAt?: Date;
 
   @ManyToOne(() => Match, (match) => match.tickets, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'match_id' })

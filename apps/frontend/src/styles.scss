@@ -85,3 +85,24 @@ body {
 * {
   box-sizing: border-box;
 }
+
+/* Loan initiation dialog (KTE-051) — overrides Material's default overlay
+   so the design's #222222 surface and rgba(0,0,0,0.72) backdrop come through. */
+.kte-loan-dialog-backdrop {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.kte-loan-dialog-panel .mat-mdc-dialog-container {
+  --mdc-dialog-container-color: transparent;
+  --mdc-dialog-container-shape: 8px;
+  padding: 0;
+  background: transparent;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+}
+
+.kte-loan-dialog-panel .mat-mdc-dialog-surface {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  overflow: visible;
+}

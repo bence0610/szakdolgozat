@@ -38,6 +38,7 @@ export class AppShellComponent {
     { label: 'Stadion', route: '/stadium', icon: 'stadium' },
     { label: 'Kosár', route: '/cart', icon: 'shopping_cart' },
     { label: 'Profil', route: '/profile', icon: 'person' },
+    { label: 'Hűség', route: '/loyalty', icon: 'star' },
     { label: 'Admin', route: '/admin', icon: 'shield' },
   ]);
 
