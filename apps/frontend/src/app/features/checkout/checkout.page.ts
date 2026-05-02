@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  OnInit,
   ViewChild,
   computed,
   inject,
@@ -20,6 +21,7 @@ import type { Stripe, StripeElements, StripePaymentElement } from '@stripe/strip
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { CartFacade } from '../../core/cart/cart.facade';
+import { LoyaltyService } from '../../core/services/loyalty.service';
 import { StripeService } from '../../core/stripe/stripe.service';
 import {
   MatchWeatherForecast,
@@ -29,6 +31,10 @@ import { HufCurrencyPipe } from '../../shared/pipes/huf-currency.pipe';
 import { CountdownPipe } from '../../shared/pipes/countdown.pipe';
 import { PaymentsApiService } from '../../shared/services/payments.api.service';
 import { SeatsApiService } from '../../shared/services/seats.api.service';
+import {
+  DiscountBreakdown,
+  DiscountBreakdownComponent,
+} from './components/discount-breakdown.component';
 import { WeatherBannerComponent } from './components/weather-banner.component';
 
 const MAX_RETRY_ATTEMPTS = 3;
@@ -48,6 +54,7 @@ const MAX_RETRY_ATTEMPTS = 3;
     HufCurrencyPipe,
     CountdownPipe,
     WeatherBannerComponent,
+    DiscountBreakdownComponent,
   ],
   template: `
     <section class="kte-checkout">
@@ -164,6 +171,10 @@ const MAX_RETRY_ATTEMPTS = 3;
                   <strong>Végösszeg</strong>
                   <strong>{{ totalAmount() | hufCurrency }}</strong>
                 </div>
+
+                @if (discountPreview(); as preview) {
+                  <kte-discount-breakdown [breakdown]="preview" />
+                }
 
                 <div class="kte-checkout__lock-status">
                   <mat-icon inline>timer</mat-icon>
@@ -290,12 +301,13 @@ const MAX_RETRY_ATTEMPTS = 3;
     `,
   ],
 })
-export class CheckoutPage implements AfterViewInit, OnDestroy {
+export class CheckoutPage implements OnInit, AfterViewInit, OnDestroy {
   protected readonly cart = inject(CartFacade);
   protected readonly auth = inject(AuthService);
   private readonly paymentsApi = inject(PaymentsApiService);
   private readonly seatsApi = inject(SeatsApiService);
   private readonly stripeService = inject(StripeService);
+  private readonly loyaltyService = inject(LoyaltyService);
   private readonly router = inject(Router);
 
   protected readonly intent = signal<PaymentIntentResponse | null>(null);
@@ -304,6 +316,7 @@ export class CheckoutPage implements AfterViewInit, OnDestroy {
   protected readonly paymentError = signal<string | null>(null);
   protected readonly initializationError = signal<string | null>(null);
   protected readonly failureCount = signal(0);
+  protected readonly discountPreview = signal<DiscountBreakdown | null>(null);
   protected readonly MAX_RETRY_ATTEMPTS = MAX_RETRY_ATTEMPTS;
 
   protected readonly totalAmount = computed(() => this.cart.total());
@@ -329,6 +342,13 @@ export class CheckoutPage implements AfterViewInit, OnDestroy {
   private elements: StripeElements | null = null;
   private paymentElement: StripePaymentElement | null = null;
 
+  ngOnInit(): void {
+    if (!this.auth.isAuthenticated()) {
+      return;
+    }
+    this.loadDiscountPreview();
+  }
+
   async ngAfterViewInit(): Promise<void> {
     if (this.cart.isEmpty()) {
       return;
@@ -338,6 +358,32 @@ export class CheckoutPage implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.paymentElement?.destroy();
+  }
+
+  /**
+   * Loads the loyalty discount preview for the current cart total. Best-effort:
+   * if the snapshot call fails (e.g. anon user or backend hiccup), we just
+   * skip the breakdown card.
+   */
+  private loadDiscountPreview(): void {
+    this.loyaltyService.getSnapshot().subscribe({
+      next: (snapshot) => {
+        const original = this.cart.total();
+        const discountPercent = snapshot.tier.discountPercent;
+        const discountAmount = Math.round((original * discountPercent) / 100);
+        this.discountPreview.set({
+          originalAmount: original,
+          discountAmount,
+          discountPercent,
+          amount: original - discountAmount,
+          currency: 'HUF',
+          tier: snapshot.tier.tier,
+        });
+      },
+      error: () => {
+        this.discountPreview.set(null);
+      },
+    });
   }
 
   private async initialize(): Promise<void> {

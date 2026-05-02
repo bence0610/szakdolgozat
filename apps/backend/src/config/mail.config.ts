@@ -7,16 +7,20 @@ export interface MailConfig {
   user: string;
   password: string;
   from: string;
+  retryDelayMs: number;
+  baseUrl: string;
 }
 
 export default registerAs(
   'mail',
   (): MailConfig => ({
-    host: process.env.MAIL_HOST ?? 'localhost',
-    port: parseInt(process.env.MAIL_PORT ?? '587', 10),
-    secure: process.env.MAIL_SECURE === 'true',
-    user: process.env.MAIL_USER ?? '',
-    password: process.env.MAIL_PASSWORD ?? '',
-    from: process.env.MAIL_FROM ?? 'no-reply@kte.hu',
+    host: process.env.SMTP_HOST ?? 'localhost',
+    port: parseInt(process.env.SMTP_PORT ?? '587', 10),
+    secure: process.env.SMTP_SECURE === 'true',
+    user: process.env.SMTP_USER ?? '',
+    password: process.env.SMTP_PASS ?? '',
+    from: process.env.SMTP_FROM ?? 'no-reply@kte.hu',
+    retryDelayMs: parseInt(process.env.EMAIL_RETRY_DELAY_MS ?? '60000', 10),
+    baseUrl: process.env.EMAIL_BASE_URL ?? process.env.FRONTEND_URL ?? 'http://localhost:4200',
   }),
 );

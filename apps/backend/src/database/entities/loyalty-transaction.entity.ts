@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { User } from './user.entity';
 
@@ -15,9 +15,14 @@ export enum LoyaltyTransactionSource {
   PROMOTION = 'promotion',
   REWARD_REDEEM = 'reward_redeem',
   ADMIN = 'admin',
+  PROFILE_COMPLETION = 'profile_completion',
+  PASS_LOAN = 'pass_loan',
+  SEASON_CARRYOVER = 'season_carryover',
+  REGISTRATION = 'registration',
 }
 
 @Entity({ name: 'loyalty_transactions' })
+@Unique('uq_loyalty_source_reference', ['source', 'referenceId'])
 @Index('idx_loyalty_user', ['userId'])
 @Index('idx_loyalty_created', ['createdAt'])
 export class LoyaltyTransaction extends BaseEntity {
@@ -36,7 +41,7 @@ export class LoyaltyTransaction extends BaseEntity {
   @Column({ type: 'int', unsigned: true, name: 'balance_after' })
   balanceAfter!: number;
 
-  @Column({ type: 'varchar', length: 36, nullable: true, name: 'reference_id' })
+  @Column({ type: 'varchar', length: 191, nullable: true, name: 'reference_id' })
   referenceId?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })

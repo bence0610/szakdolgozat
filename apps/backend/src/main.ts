@@ -5,6 +5,7 @@ import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
 import { json, raw } from 'express';
 import { AppModule } from './app.module';
 import { AppConfig } from './config';
@@ -14,6 +15,7 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+    bodyParser: false,
     rawBody: true,
   });
 
@@ -22,10 +24,26 @@ async function bootstrap(): Promise<void> {
 
   app.setGlobalPrefix('api', { exclude: ['health'] });
 
-  // Stripe webhook needs the raw request body for signature verification.
-  // We register a raw bodyParser strictly for that route, then JSON for everything else.
+  // Stripe requires the *raw* request body to verify webhook signatures.
+  // We register a raw bodyParser strictly for the webhook routes, then JSON
+  // for everything else.
+  app.use(
+    '/api/webhooks/stripe',
+    express.raw({ type: 'application/json' }),
+    (
+      req: express.Request & { rawBody?: Buffer },
+      _res: express.Response,
+      next: express.NextFunction,
+    ) => {
+      if (Buffer.isBuffer(req.body)) {
+        req.rawBody = req.body;
+      }
+      next();
+    },
+  );
   app.use('/api/payments/webhook', raw({ type: 'application/json' }));
   app.use(json({ limit: '1mb' }));
+  app.use(express.urlencoded({ extended: true }));
 
   app.use(cookieParser());
 
@@ -64,6 +82,8 @@ async function bootstrap(): Promise<void> {
     .addTag('Chatbot')
     .addTag('Payments')
     .addTag('Weather')
+    .addTag('Checkout')
+    .addTag('SeasonPasses')
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

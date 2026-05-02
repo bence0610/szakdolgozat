@@ -51,6 +51,8 @@ export class AppShellComponent {
     { label: 'Kezdőlap', route: '/', icon: 'home', exact: true },
     { label: 'Stadion', route: '/stadium', icon: 'stadium' },
     { label: 'Kosár', route: '/cart', icon: 'shopping_cart' },
+    { label: 'Hűség', route: '/loyalty', icon: 'star', authOnly: true },
+    { label: 'Admin', route: '/admin', icon: 'shield', authOnly: true },
   ]);
 
   protected readonly visibleNavItems = computed(() =>

@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { Ticket, TicketStatus, User } from '../../database/entities';
+import {
+  LoyaltyTransactionSource,
+  LoyaltyTransactionType,
+  Ticket,
+  TicketStatus,
+  User,
+} from '../../database/entities';
+import { LoyaltyService } from '../loyalty/loyalty.service';
 import {
   ProfileDto,
   ProfileTicketDto,
@@ -13,9 +20,12 @@ const ACTIVE_STATUSES: TicketStatus[] = [TicketStatus.PAID, TicketStatus.PENDING
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Ticket) private readonly ticketRepository: Repository<Ticket>,
+    private readonly loyaltyService: LoyaltyService,
   ) {}
 
   async count(): Promise<number> {
@@ -88,6 +98,13 @@ export class UsersService {
     return { items, total, limit, offset };
   }
 
+  /**
+   * Updates a user's profile fields and (when the profile becomes "complete"
+   * for the first time) awards the loyalty profile-completion bonus exactly
+   * once via LoyaltyService (idempotent through (source, referenceId)).
+   *
+   * Completion criteria: phoneNumber AND dateOfBirth are present.
+   */
   async updateProfile(userId: string, dto: UpdateProfileDto): Promise<ProfileDto> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
@@ -102,8 +119,58 @@ export class UsersService {
     if (dto.phoneNumber !== undefined) {
       user.phoneNumber = dto.phoneNumber.trim() || undefined;
     }
+    if (dto.dateOfBirth !== undefined) {
+      user.dateOfBirth = dto.dateOfBirth;
+    }
+
+    const wasAlreadyComplete = !!user.profileCompletedAt;
+    const isNowComplete = Boolean(user.phoneNumber && user.dateOfBirth);
+
+    if (!wasAlreadyComplete && isNowComplete) {
+      user.profileCompletedAt = new Date();
+    }
+
     await this.userRepository.save(user);
+
+    if (!wasAlreadyComplete && isNowComplete) {
+      try {
+        await this.loyaltyService.award({
+          userId: user.id,
+          type: LoyaltyTransactionType.EARN,
+          source: LoyaltyTransactionSource.PROFILE_COMPLETION,
+          points: this.loyaltyService.getConfig().profileCompletionPoints,
+          referenceId: `profile_completion:${user.id}`,
+          description: 'Profil kitöltése jutalom',
+        });
+      } catch (error) {
+        this.logger.error(
+          `Profile completion award failed user=${user.id}: ${(error as Error).message}`,
+        );
+      }
+    }
+
     return this.getProfile(userId);
+  }
+
+  /**
+   * Awards registration bonus points exactly once per user (idempotent via
+   * referenceId). Intended to be called from the registration flow.
+   */
+  async awardRegistrationBonus(userId: string): Promise<void> {
+    try {
+      await this.loyaltyService.award({
+        userId,
+        type: LoyaltyTransactionType.EARN,
+        source: LoyaltyTransactionSource.REGISTRATION,
+        points: this.loyaltyService.getConfig().registrationPoints,
+        referenceId: `registration:${userId}`,
+        description: 'Regisztráció bónusz',
+      });
+    } catch (error) {
+      this.logger.error(
+        `Registration bonus failed user=${userId}: ${(error as Error).message}`,
+      );
+    }
   }
 
   /**

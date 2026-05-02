@@ -10,6 +10,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
+import { SeasonPassResponse } from '../../core/models/season-pass.models';
+import { SeasonPassesService } from '../../core/services/season-passes.service';
 import { HufCurrencyPipe } from '../../shared/pipes/huf-currency.pipe';
 import {
   LoyaltyTier,
@@ -17,6 +19,7 @@ import {
   UserTicket,
 } from '../../shared/models/auth.model';
 import { AuthApiService } from '../../shared/services/auth.api.service';
+import { SeasonPassCardComponent } from './components/season-pass-card.component';
 
 const TIER_LABEL: Readonly<Record<LoyaltyTier, string>> = {
   bronze: 'Bronz',
@@ -46,6 +49,7 @@ const TIER_COLOR: Readonly<Record<LoyaltyTier, string>> = {
     MatDividerModule,
     MatProgressSpinnerModule,
     HufCurrencyPipe,
+    SeasonPassCardComponent,
   ],
   template: `
     <section class="kte-profile">
@@ -143,6 +147,23 @@ const TIER_COLOR: Readonly<Record<LoyaltyTier, string>> = {
               </div>
             }
           </mat-tab>
+
+          <mat-tab label="Bérletek ({{ passes().length }})">
+            @if (loadingPasses()) {
+              <div class="kte-profile__loader">
+                <mat-spinner diameter="32" />
+                <span>Bérletek betöltése...</span>
+              </div>
+            } @else if (passes().length === 0) {
+              <p class="kte-profile__empty">Még nincs bérleted.</p>
+            } @else {
+              <div class="kte-profile__passes">
+                @for (pass of passes(); track pass.id) {
+                  <kte-season-pass-card [pass]="pass" (changed)="reloadPasses()" />
+                }
+              </div>
+            }
+          </mat-tab>
         </mat-tab-group>
 
         <div class="kte-profile__actions">
@@ -219,7 +240,8 @@ const TIER_COLOR: Readonly<Record<LoyaltyTier, string>> = {
         color: var(--kte-color-primary);
       }
       .kte-profile__tickets,
-      .kte-profile__history {
+      .kte-profile__history,
+      .kte-profile__passes {
         display: grid;
         gap: var(--kte-spacing-3);
         padding: var(--kte-spacing-4) 0;
@@ -277,11 +299,14 @@ const TIER_COLOR: Readonly<Record<LoyaltyTier, string>> = {
 export class ProfilePage implements OnInit {
   private readonly api = inject(AuthApiService);
   private readonly auth = inject(AuthService);
+  private readonly passesApi = inject(SeasonPassesService);
   private readonly router = inject(Router);
 
   protected readonly loading = signal(true);
+  protected readonly loadingPasses = signal(true);
   protected readonly profile = signal<UserProfile | null>(null);
   protected readonly tickets = signal<readonly UserTicket[]>([]);
+  protected readonly passes = signal<readonly SeasonPassResponse[]>([]);
 
   protected readonly activeTickets = computed(() =>
     this.tickets().filter((t) => t.isActive),
@@ -319,6 +344,21 @@ export class ProfilePage implements OnInit {
     } finally {
       this.loading.set(false);
     }
+    this.reloadPasses();
+  }
+
+  protected reloadPasses(): void {
+    this.loadingPasses.set(true);
+    this.passesApi.listMine().subscribe({
+      next: (passes) => {
+        this.passes.set(passes);
+        this.loadingPasses.set(false);
+      },
+      error: () => {
+        this.passes.set([]);
+        this.loadingPasses.set(false);
+      },
+    });
   }
 
   protected logout(): void {

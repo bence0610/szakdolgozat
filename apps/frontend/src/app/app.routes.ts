@@ -62,6 +62,12 @@ export const APP_ROUTES: Routes = [
         title: 'Profil',
       },
       {
+        path: 'loyalty',
+        loadComponent: () =>
+          import('./features/loyalty/loyalty-dashboard.page').then((m) => m.LoyaltyDashboardPage),
+        title: 'Hűség Dashboard',
+      },
+      {
         path: 'admin',
         canActivate: [authGuard],
         loadComponent: () =>

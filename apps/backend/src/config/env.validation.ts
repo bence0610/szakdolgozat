@@ -52,13 +52,34 @@ export const envValidationSchema = Joi.object({
   OPENWEATHER_CITY: Joi.string().default('Kecskemet,HU'),
   OPENWEATHER_CACHE_TTL_SECONDS: Joi.number().integer().min(60).default(3600),
 
-  // Mail
-  MAIL_HOST: Joi.string().required(),
-  MAIL_PORT: Joi.number().port().default(587),
-  MAIL_SECURE: Joi.boolean().default(false),
-  MAIL_USER: Joi.string().required(),
-  MAIL_PASSWORD: Joi.string().allow('').required(),
-  MAIL_FROM: Joi.string().email().required(),
+  // Mail (SMTP)
+  SMTP_HOST: Joi.string().required(),
+  SMTP_PORT: Joi.number().port().default(587),
+  SMTP_SECURE: Joi.boolean().default(false),
+  SMTP_USER: Joi.string().required(),
+  SMTP_PASS: Joi.string().allow('').required(),
+  SMTP_FROM: Joi.string().email().required(),
+  EMAIL_RETRY_DELAY_MS: Joi.number().integer().min(1000).default(60000),
+  EMAIL_BASE_URL: Joi.string().uri().required(),
+
+  // QR
+  QR_SIGNING_SECRET: Joi.string().min(16).required(),
+  QR_TICKET_ISSUER: Joi.string().default('kte-jegyportal'),
+  QR_LOAN_ISSUER: Joi.string().default('kte-loan'),
+
+  // Loyalty
+  LOYALTY_REGISTRATION_POINTS: Joi.number().integer().min(0).default(100),
+  LOYALTY_PROFILE_COMPLETION_POINTS: Joi.number().integer().min(0).default(50),
+  LOYALTY_TICKET_POINTS_PER_TICKET: Joi.number().integer().min(0).default(50),
+  LOYALTY_SEASON_PASS_POINTS: Joi.number().integer().min(0).default(500),
+  LOYALTY_PASS_LOAN_POINTS: Joi.number().integer().min(0).default(25),
+  LOYALTY_CARRYOVER_PERCENT: Joi.number().integer().min(0).max(100).default(50),
+
+  // Cron
+  LOAN_RELEASE_CRON: Joi.string().default('0 * * * *'),
+  TICKET_EXPIRE_CRON: Joi.string().default('0 4 * * *'),
+  CRON_TIMEZONE: Joi.string().default('Europe/Budapest'),
+  LOAN_INVITATION_TTL_HOURS: Joi.number().integer().min(1).default(72),
 
   // Logging
   LOG_LEVEL: Joi.string().valid('error', 'warn', 'info', 'debug', 'verbose').default('info'),
