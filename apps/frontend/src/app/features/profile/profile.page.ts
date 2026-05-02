@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -8,18 +17,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import { Subscription, firstValueFrom, interval } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { SeasonPassResponse } from '../../core/models/season-pass.models';
 import { SeasonPassesService } from '../../core/services/season-passes.service';
-import { HufCurrencyPipe } from '../../shared/pipes/huf-currency.pipe';
 import {
   LoyaltyTier,
   UserProfile,
   UserTicket,
 } from '../../shared/models/auth.model';
+import { WaitlistEntry } from '../../shared/models/waitlist.model';
+import { HufCurrencyPipe } from '../../shared/pipes/huf-currency.pipe';
 import { AuthApiService } from '../../shared/services/auth.api.service';
+import { WaitlistApiService } from '../../shared/services/waitlist.api.service';
 import { SeasonPassCardComponent } from './components/season-pass-card.component';
+import { WaitlistCardComponent } from './components/waitlist-card/waitlist-card.component';
 
 const TIER_LABEL: Readonly<Record<LoyaltyTier, string>> = {
   bronze: 'Bronz',
@@ -34,6 +46,8 @@ const TIER_COLOR: Readonly<Record<LoyaltyTier, string>> = {
   gold: '#ffc905',
   platinum: '#0a3d62',
 };
+
+const WAITLIST_POLL_MS = 5_000;
 
 @Component({
   selector: 'kte-profile-page',
@@ -50,6 +64,7 @@ const TIER_COLOR: Readonly<Record<LoyaltyTier, string>> = {
     MatProgressSpinnerModule,
     HufCurrencyPipe,
     SeasonPassCardComponent,
+    WaitlistCardComponent,
   ],
   template: `
     <section class="kte-profile">
@@ -164,6 +179,23 @@ const TIER_COLOR: Readonly<Record<LoyaltyTier, string>> = {
               </div>
             }
           </mat-tab>
+
+          <mat-tab label="Várólista ({{ waitlistEntries().length }})">
+            @if (loadingWaitlist()) {
+              <div class="kte-profile__loader">
+                <mat-spinner diameter="32" />
+                <span>Várólista betöltése…</span>
+              </div>
+            } @else if (waitlistEntries().length === 0) {
+              <p class="kte-profile__empty">Jelenleg nem vagy egyetlen várólistán sem.</p>
+            } @else {
+              <div class="kte-profile__waitlist">
+                @for (entry of waitlistEntries(); track entry.id) {
+                  <kte-waitlist-card [entry]="entry" (changed)="reloadWaitlist()" />
+                }
+              </div>
+            }
+          </mat-tab>
         </mat-tab-group>
 
         <div class="kte-profile__actions">
@@ -241,7 +273,8 @@ const TIER_COLOR: Readonly<Record<LoyaltyTier, string>> = {
       }
       .kte-profile__tickets,
       .kte-profile__history,
-      .kte-profile__passes {
+      .kte-profile__passes,
+      .kte-profile__waitlist {
         display: grid;
         gap: var(--kte-spacing-3);
         padding: var(--kte-spacing-4) 0;
@@ -300,13 +333,17 @@ export class ProfilePage implements OnInit {
   private readonly api = inject(AuthApiService);
   private readonly auth = inject(AuthService);
   private readonly passesApi = inject(SeasonPassesService);
+  private readonly waitlistApi = inject(WaitlistApiService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly loading = signal(true);
   protected readonly loadingPasses = signal(true);
+  protected readonly loadingWaitlist = signal(true);
   protected readonly profile = signal<UserProfile | null>(null);
   protected readonly tickets = signal<readonly UserTicket[]>([]);
   protected readonly passes = signal<readonly SeasonPassResponse[]>([]);
+  protected readonly waitlistEntries = signal<readonly WaitlistEntry[]>([]);
 
   protected readonly activeTickets = computed(() =>
     this.tickets().filter((t) => t.isActive),
@@ -333,6 +370,14 @@ export class ProfilePage implements OnInit {
     return user ? TIER_COLOR[user.loyaltyTier] : '';
   });
 
+  /**
+   * Polls the waitlist endpoint every 5 seconds while at least one entry is
+   * in NOTIFIED status — so the "felszabadult egy hely" countdown stays
+   * accurate without requiring WebSocket. When no entry is notified the
+   * polling subscription is paused (next reload restarts it).
+   */
+  private pollSub: Subscription | null = null;
+
   async ngOnInit(): Promise<void> {
     try {
       const [profile, ticketsPage] = await Promise.all([
@@ -345,6 +390,7 @@ export class ProfilePage implements OnInit {
       this.loading.set(false);
     }
     this.reloadPasses();
+    this.reloadWaitlist();
   }
 
   protected reloadPasses(): void {
@@ -361,7 +407,50 @@ export class ProfilePage implements OnInit {
     });
   }
 
+  protected reloadWaitlist(): void {
+    this.loadingWaitlist.set(true);
+    this.waitlistApi.listMine().subscribe({
+      next: (entries) => {
+        this.waitlistEntries.set(entries);
+        this.loadingWaitlist.set(false);
+        this.adjustPolling(entries);
+      },
+      error: () => {
+        this.waitlistEntries.set([]);
+        this.loadingWaitlist.set(false);
+        this.stopPolling();
+      },
+    });
+  }
+
+  private adjustPolling(entries: readonly WaitlistEntry[]): void {
+    const hasNotified = entries.some((e) => e.status === 'notified');
+    if (hasNotified && !this.pollSub) {
+      this.pollSub = interval(WAITLIST_POLL_MS)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          this.waitlistApi.listMine().subscribe({
+            next: (next) => {
+              this.waitlistEntries.set(next);
+              const stillNotified = next.some((e) => e.status === 'notified');
+              if (!stillNotified) {
+                this.stopPolling();
+              }
+            },
+          });
+        });
+    } else if (!hasNotified && this.pollSub) {
+      this.stopPolling();
+    }
+  }
+
+  private stopPolling(): void {
+    this.pollSub?.unsubscribe();
+    this.pollSub = null;
+  }
+
   protected logout(): void {
+    this.stopPolling();
     this.auth.logout().subscribe({
       complete: () => void this.router.navigate(['/']),
     });

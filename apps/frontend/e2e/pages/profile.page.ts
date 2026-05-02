@@ -29,6 +29,7 @@ export class ProfilePage {
   // Tabs
   readonly activeTicketsTab: Locator;
   readonly pastTicketsTab: Locator;
+  readonly waitlistTab: Locator;
 
   // Active tickets (TicketCardComponent instances)
   readonly activeTicketCards: Locator;
@@ -88,6 +89,13 @@ export class ProfilePage {
   readonly activeLoans: Locator;
   readonly loanCancelItemButton: Locator;
 
+  // KTE-057 — Waitlist section (Iteration 5)
+  readonly waitlistCards: Locator;
+  readonly waitlistEmpty: Locator;
+  readonly waitlistPositionText: Locator;
+  readonly waitlistConfirmButton: Locator;
+  readonly waitlistProgressBar: Locator;
+
   // Footer action
   readonly logoutButton: Locator;
 
@@ -106,6 +114,8 @@ export class ProfilePage {
     // Tab group — the label text contains the dynamic count in parentheses
     this.activeTicketsTab = page.getByRole('tab', { name: /aktív jegyek/i });
     this.pastTicketsTab = page.getByRole('tab', { name: /vásárlási előzmények/i });
+    // KTE-057: Iteration 5 — Waitlist tab
+    this.waitlistTab = page.getByRole('tab', { name: /várólista/i });
 
     // Iteration 4: active ticket list is rendered as kte-ticket-card components
     // inside the .kte-profile__tickets container.
@@ -167,6 +177,17 @@ export class ProfilePage {
     // KTE-054 — Active loan cancellation
     this.activeLoans = page.locator('.kte-profile__active-loans');
     this.loanCancelItemButton = page.getByRole('button', { name: /lemondás/i });
+
+    // KTE-057 — Waitlist section (Iteration 5)
+    // The waitlist section renders kte-waitlist-card components inside .kte-profile__waitlist
+    this.waitlistCards = page.locator('.kte-profile__waitlist kte-waitlist-card');
+    this.waitlistEmpty = page.locator('.kte-profile__waitlist ~ .kte-profile__empty, .kte-profile__empty').last();
+    // Position text is inside the .kte-waitlist-card__position span
+    this.waitlistPositionText = page.locator('.kte-waitlist-card__position');
+    // "Megerősítés és vásárlás" button — only visible in NOTIFIED status
+    this.waitlistConfirmButton = page.getByRole('button', { name: /megerősítés és vásárlás/i });
+    // Progress bar inside the notified card
+    this.waitlistProgressBar = page.locator('.kte-waitlist-card mat-progress-bar');
 
     this.logoutButton = page.getByRole('button', { name: /kijelentkezés/i });
   }

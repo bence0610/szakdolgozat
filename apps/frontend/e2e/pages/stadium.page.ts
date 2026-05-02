@@ -44,6 +44,10 @@ export class StadiumPage {
   readonly loadingSpinner: Locator;
   readonly noMatchEmpty: Locator;
 
+  // KTE-057: Waitlist join button (Iteration 5) — rendered when all seats are sold out
+  // The button is inside kte-waitlist-join-button and has the class .kte-waitlist-join
+  readonly waitlistJoinButton: Locator;
+
   // Snackbar
   readonly snackbar: Locator;
 
@@ -79,6 +83,10 @@ export class StadiumPage {
 
     this.loadingSpinner = page.locator('.kte-stadium__loading mat-progress-spinner');
     this.noMatchEmpty = page.locator('.kte-stadium__empty');
+
+    // KTE-057 — WaitlistJoinButtonComponent rendered when the match is sold out.
+    // The button uses aria-label "Várólistára iratkozom" (the mat-flat-button text).
+    this.waitlistJoinButton = page.getByRole('button', { name: /várólistára iratkozom/i });
 
     // Material snackbar appears outside the Angular app root — query the
     // document-level container to avoid timing issues.

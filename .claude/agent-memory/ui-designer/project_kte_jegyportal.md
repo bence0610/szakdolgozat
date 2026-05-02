@@ -34,5 +34,6 @@ KTE Jegyportál is a Hungarian football ticketing platform for Kecskeméti TE. A
 7. 07 – Fizetés (Checkout)
 8. 08 – Rendelés Visszaigazolás (Order Confirmation)
 9. 09 – Hűség Dashboard (Loyalty Dashboard)
-10. 10 – Admin Dashboard
+10. 10 – Admin Dashboard (KTE-061 heatmap + KTE-062 revenue stats — két szekció egy artboardon: felső sor = revenue stat kártyák, alsó = seat occupancy heatmap; design spec elkészült Iteration 5-ben)
 11. 11 – Bérletes Kölcsönzés (Season Pass Loan – multi-step modal flow, KTE-051)
+12. 12 – Chatbot Widget (KTE-059 — floating overlay, zárt/nyitott állapot; design spec elkészült Iteration 5-ben; Paper artboardot létre kell hozni)

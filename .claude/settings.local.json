@@ -26,7 +26,10 @@
       "Bash(xargs grep *)",
       "Bash(node -e \"const p = require\\('C:/Users/User/szakdolgozat/package.json'\\); console.log\\(JSON.stringify\\(Object.keys\\(p.dependencies || {}\\), null, 2\\)\\)\")",
       "Bash(node -e \"const p = require\\('C:/Users/User/szakdolgozat/package.json'\\); console.log\\(JSON.stringify\\(p, null, 2\\)\\)\")",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(grep -n 'selectedMatch\\\\$\\\\|sold-out\\\\|isSoldOut' /c/Users/User/szakdolgozat/apps/frontend/src/app/features/stadium/stadium.page.ts)",
+      "Bash(xargs cat *)",
+      "Bash(xargs wc *)"
     ]
   }
 }

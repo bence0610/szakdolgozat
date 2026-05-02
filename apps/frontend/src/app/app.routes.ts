@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './core/auth/admin.guard';
 import { authGuard, guestGuard } from './core/auth/auth.guard';
 import { AppShellComponent } from './core/layout/app-shell/app-shell.component';
 
@@ -69,9 +70,9 @@ export const APP_ROUTES: Routes = [
       },
       {
         path: 'admin',
-        canActivate: [authGuard],
-        loadComponent: () =>
-          import('./features/admin/admin.page').then((m) => m.AdminPage),
+        canActivate: [adminGuard],
+        loadChildren: () =>
+          import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
         title: 'Admin',
       },
       {

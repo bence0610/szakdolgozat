@@ -9,6 +9,8 @@ import weatherConfig from './weather.config';
 import qrConfig from './qr.config';
 import loyaltyConfig from './loyalty.config';
 import cronConfig from './cron.config';
+import waitlistConfig from './waitlist.config';
+import chatbotConfig from './chatbot.config';
 
 export const configurations = [
   appConfig,
@@ -22,6 +24,8 @@ export const configurations = [
   qrConfig,
   loyaltyConfig,
   cronConfig,
+  waitlistConfig,
+  chatbotConfig,
 ];
 
 export * from './app.config';
@@ -35,4 +39,6 @@ export * from './weather.config';
 export * from './qr.config';
 export * from './loyalty.config';
 export * from './cron.config';
+export * from './waitlist.config';
+export * from './chatbot.config';
 export * from './env.validation';

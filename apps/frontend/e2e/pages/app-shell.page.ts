@@ -39,6 +39,22 @@ export class AppShellPage {
   // Iteration 4: "Hűség" navigation link in toolbar and sidenav
   readonly loyaltyNavLink: Locator;
 
+  // KTE-059: Chatbot widget (Iteration 5)
+  // The FAB button has aria-label="KTE AI Asszisztens megnyitása"
+  readonly chatbotFab: Locator;
+  // The CDK overlay panel rendered by ChatbotPanelComponent
+  readonly chatbotPanel: Locator;
+  // The close button inside the panel header
+  readonly chatbotCloseButton: Locator;
+  // Suggestion chip buttons rendered in the empty state
+  readonly chatbotSuggestionChips: Locator;
+  // The text input field
+  readonly chatbotInput: Locator;
+  // Typing indicator (three dots animation)
+  readonly chatbotTypingIndicator: Locator;
+  // Bot message bubbles
+  readonly chatbotMessages: Locator;
+
   constructor(page: Page) {
     this.page = page;
 
@@ -63,6 +79,23 @@ export class AppShellPage {
 
     // Iteration 4: toolbar nav link — only visible when authenticated
     this.loyaltyNavLink = page.getByRole('link', { name: /hűség/i });
+
+    // KTE-059 — Chatbot widget (Iteration 5)
+    // The FAB is rendered by ChatbotWidgetComponent inside the app shell.
+    this.chatbotFab = page.getByRole('button', { name: /kte ai asszisztens megnyitása/i });
+    // The panel is mounted in a CDK global overlay. The outermost element of
+    // ChatbotPanelComponent has role="dialog" and aria-label="KTE AI Asszisztens".
+    this.chatbotPanel = page.getByRole('dialog', { name: /kte ai asszisztens/i });
+    // Close button inside the panel header
+    this.chatbotCloseButton = this.chatbotPanel.getByRole('button', { name: /bezárás/i });
+    // Quick-suggestion chips shown in the empty state
+    this.chatbotSuggestionChips = page.locator('.kte-chatbot-panel__chip');
+    // Plain text input
+    this.chatbotInput = page.locator('.kte-chatbot-panel__input');
+    // Typing indicator (three animated dots)
+    this.chatbotTypingIndicator = page.locator('.kte-chatbot-panel__typing');
+    // Individual message components rendered by ChatbotMessageComponent
+    this.chatbotMessages = page.locator('kte-chatbot-message');
   }
 
   /** Opens the user menu (authenticated only). */

@@ -501,3 +501,135 @@ export const ACTIVE_LOANS_RESPONSE = {
   items: [LOAN_ACTIVE],
   total: 1,
 };
+
+// ---------------------------------------------------------------------------
+// Iteration 5: Waitlist (KTE-057)
+// ---------------------------------------------------------------------------
+
+export const WAITLIST_MATCH_SUMMARY = {
+  id: MATCH_ID_1,
+  homeTeam: 'Kecskeméti TE',
+  awayTeam: 'Ferencvárosi TC',
+  venue: 'Széktói Stadion, Kecskemét',
+  kickoffAt: FUTURE_KICKOFF_1,
+};
+
+/** Active waitlist entry — user is queued, position 3 */
+export const WAITLIST_ENTRY_ACTIVE = {
+  id: 'wwwwwwww-0000-4000-8000-000000000001',
+  matchId: MATCH_ID_1,
+  status: 'active',
+  requestedQuantity: 1,
+  preferredSection: 'A',
+  position: 3,
+  peopleAhead: 2,
+  createdAt: new Date(Date.now() - 10 * 60_000).toISOString(),
+  notifiedAt: undefined,
+  claimExpiresAt: undefined,
+  match: WAITLIST_MATCH_SUMMARY,
+};
+
+/** Notified waitlist entry — a seat just became available, 5 min window */
+export const WAITLIST_ENTRY_NOTIFIED = {
+  id: 'wwwwwwww-0000-4000-8000-000000000002',
+  matchId: MATCH_ID_1,
+  status: 'notified',
+  requestedQuantity: 1,
+  preferredSection: 'A',
+  position: 1,
+  peopleAhead: 0,
+  createdAt: new Date(Date.now() - 15 * 60_000).toISOString(),
+  notifiedAt: new Date(Date.now() - 60_000).toISOString(),
+  claimExpiresAt: new Date(Date.now() + 4 * 60_000).toISOString(),
+  match: WAITLIST_MATCH_SUMMARY,
+};
+
+export const WAITLIST_ENTRY_LIST_ACTIVE = [WAITLIST_ENTRY_ACTIVE];
+export const WAITLIST_ENTRY_LIST_NOTIFIED = [WAITLIST_ENTRY_NOTIFIED];
+export const WAITLIST_ENTRY_LIST_EMPTY: unknown[] = [];
+
+/** POST /waitlist — successful join response */
+export const WAITLIST_JOIN_RESPONSE = {
+  ...WAITLIST_ENTRY_ACTIVE,
+  id: 'wwwwwwww-0000-4000-8000-000000000003',
+  position: 4,
+  peopleAhead: 3,
+};
+
+// ---------------------------------------------------------------------------
+// Iteration 5: Chatbot (KTE-059)
+// ---------------------------------------------------------------------------
+
+export const CHATBOT_SEND_RESPONSE = {
+  conversationId: 'conv-00000000-0001',
+  reply: 'A következő hazai meccs 2026. május 10-én lesz a Széktói Stadionban.',
+};
+
+// ---------------------------------------------------------------------------
+// Iteration 5: Admin (KTE-061, KTE-062, KTE-063)
+// ---------------------------------------------------------------------------
+
+export const AUTH_USER_ADMIN = {
+  ...AUTH_USER,
+  role: 'admin',
+  loyaltyTier: 'bronze' as const,
+  loyaltyPoints: 0,
+};
+
+export const AUTH_RESPONSE_ADMIN = {
+  ...AUTH_RESPONSE,
+  user: AUTH_USER_ADMIN,
+};
+
+/** GET /admin/revenue?days=30 */
+export const ADMIN_REVENUE_STATS = {
+  summary: {
+    todayRevenue: 245_000,
+    monthRevenue: 3_870_000,
+    todayTicketCount: 70,
+    monthTicketCount: 1106,
+    topMatch: {
+      matchId: MATCH_ID_1,
+      homeTeam: 'Kecskeméti TE',
+      awayTeam: 'Ferencvárosi TC',
+      kickoffAt: FUTURE_KICKOFF_1,
+      ticketCount: 421,
+      revenue: 1_473_500,
+    },
+  },
+  daily: [
+    { date: '2026-04-01', amount: 105_000, ticketCount: 30 },
+    { date: '2026-04-02', amount: 87_500, ticketCount: 25 },
+  ],
+  byMatch: [
+    {
+      matchId: MATCH_ID_1,
+      homeTeam: 'Kecskeméti TE',
+      awayTeam: 'Ferencvárosi TC',
+      kickoffAt: FUTURE_KICKOFF_1,
+      ticketCount: 421,
+      revenue: 1_473_500,
+    },
+  ],
+};
+
+/** GET /admin/matches/:id/occupancy */
+export const ADMIN_OCCUPANCY = {
+  matchId: MATCH_ID_1,
+  homeTeam: 'Kecskeméti TE',
+  awayTeam: 'Ferencvárosi TC',
+  kickoffAt: FUTURE_KICKOFF_1,
+  venue: 'Széktói Stadion, Kecskemét',
+  totalCapacity: 8200,
+  totalSold: 3200,
+  totalLocked: 150,
+  totalAvailable: 4850,
+  occupancyPercent: 41,
+  generatedAt: new Date().toISOString(),
+  sectors: [
+    { section: 'A', total: 3000, sold: 1800, locked: 80, available: 1120, occupancyPercent: 63 },
+    { section: 'B', total: 2500, sold: 800, locked: 40, available: 1660, occupancyPercent: 34 },
+    { section: 'C', total: 1800, sold: 400, locked: 20, available: 1380, occupancyPercent: 24 },
+    { section: 'VIP', total: 900, sold: 200, locked: 10, available: 690, occupancyPercent: 23 },
+  ],
+};

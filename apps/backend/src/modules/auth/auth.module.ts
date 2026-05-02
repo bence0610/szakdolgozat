@@ -9,6 +9,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from './guards/optional-jwt-auth.guard';
+import { RolesGuard } from './guards/roles.guard';
 import { RefreshTokenStore } from './refresh-token.store';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
@@ -26,12 +27,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     JwtStrategy,
     JwtAuthGuard,
     OptionalJwtAuthGuard,
+    RolesGuard,
     RefreshTokenStore,
   ],
   exports: [
     AuthService,
     JwtAuthGuard,
     OptionalJwtAuthGuard,
+    RolesGuard,
     RefreshTokenStore,
     JwtStrategy,
     PassportModule,

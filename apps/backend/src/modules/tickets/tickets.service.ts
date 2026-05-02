@@ -1,8 +1,11 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
+  Optional,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
@@ -20,6 +23,7 @@ import { LoyaltyService } from '../loyalty/loyalty.service';
 import { QrService } from '../qr/qr.service';
 import { TicketRendererService } from './ticket-renderer.service';
 import { TicketScanResponseDto } from './dto/scan-ticket.dto';
+import { WaitlistNotificationService } from '../waitlist/waitlist-notification.service';
 
 @Injectable()
 export class TicketsService {
@@ -36,6 +40,9 @@ export class TicketsService {
     private readonly loyaltyService: LoyaltyService,
     private readonly renderer: TicketRendererService,
     private readonly configService: ConfigService,
+    @Optional()
+    @Inject(forwardRef(() => WaitlistNotificationService))
+    private readonly waitlistNotifier?: WaitlistNotificationService,
   ) {
     this.loyaltyConfig = this.configService.getOrThrow<LoyaltyConfig>('loyalty');
     this.mailConfig = this.configService.getOrThrow<MailConfig>('mail');
@@ -151,6 +158,50 @@ export class TicketsService {
   }
 
   /**
+   * Cancels or refunds a ticket. The seat returns to the available pool, so
+   * the next person on the match's waitlist (if any) is notified.
+   *
+   * Designed to be safe to call from admin tooling and from Stripe refund
+   * webhooks — idempotent for repeated calls.
+   */
+  async cancelTicket(
+    ticketId: string,
+    options: { reason: 'refunded' | 'cancelled'; actorUserId?: string } = { reason: 'cancelled' },
+  ): Promise<Ticket> {
+    const ticket = await this.dataSource.transaction(async (manager) => {
+      const ticketRepo = manager.getRepository(Ticket);
+      const found = await ticketRepo.findOne({ where: { id: ticketId } });
+      if (!found) {
+        throw new NotFoundException(`Ticket ${ticketId} not found`);
+      }
+      if (found.status === TicketStatus.CANCELLED || found.status === TicketStatus.REFUNDED) {
+        return found;
+      }
+      found.status = options.reason === 'refunded' ? TicketStatus.REFUNDED : TicketStatus.CANCELLED;
+      await ticketRepo.save(found);
+      if (found.qrJti) {
+        await this.qrService.revoke(found.qrJti).catch(() => undefined);
+      }
+      return found;
+    });
+
+    this.logger.log(
+      `Ticket ${ticketId} -> ${ticket.status} by actor=${options.actorUserId ?? 'system'}`,
+    );
+
+    // Best-effort: invite the next waitlist member.
+    if (this.waitlistNotifier) {
+      void this.waitlistNotifier.notifyNextInLine(ticket.matchId).catch((error: unknown) => {
+        this.logger.error(
+          `notifyNextInLine after cancel(${ticketId}) failed: ${(error as Error).message}`,
+        );
+      });
+    }
+
+    return ticket;
+  }
+
+  /**
    * Hook called by the Stripe webhook handler when a payment_intent succeeds.
    * Marks all matching tickets as PAID, awards loyalty points, and dispatches
    * the confirmation email. Designed to be safe to call multiple times -
@@ -214,7 +265,9 @@ export class TicketsService {
       const refresh = await this.ticketRepository.find({
         where: { id: In(userTickets.map((t) => t.id)) },
       });
-      const alreadySent = refresh.some((t) => t.confirmationEmailSentAt !== null && t.confirmationEmailSentAt !== undefined);
+      const alreadySent = refresh.some(
+        (t) => t.confirmationEmailSentAt !== null && t.confirmationEmailSentAt !== undefined,
+      );
       if (alreadySent) {
         this.logger.log(`Confirmation email skipped (already sent) user=${userId}`);
         continue;

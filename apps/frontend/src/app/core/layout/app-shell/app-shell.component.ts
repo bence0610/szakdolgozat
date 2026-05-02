@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,8 +9,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { CartFacade } from '../../cart/cart.facade';
+import { ChatbotWidgetComponent } from '../../../features/chatbot/chatbot-widget.component';
 
 interface NavItem {
   readonly label: string;
@@ -18,6 +21,8 @@ interface NavItem {
   readonly exact?: boolean;
   readonly authOnly?: boolean;
 }
+
+const HIDDEN_CHATBOT_ROUTES: readonly string[] = ['/checkout'];
 
 @Component({
   selector: 'kte-app-shell',
@@ -35,6 +40,7 @@ interface NavItem {
     MatMenuModule,
     MatSidenavModule,
     MatListModule,
+    ChatbotWidgetComponent,
   ],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
@@ -42,6 +48,7 @@ interface NavItem {
 export class AppShellComponent {
   private readonly auth = inject(AuthService);
   private readonly cart = inject(CartFacade);
+  private readonly router = inject(Router);
 
   protected readonly user = this.auth.user;
   protected readonly isAuthenticated = this.auth.isAuthenticated;
@@ -61,6 +68,24 @@ export class AppShellComponent {
 
   protected readonly sidenavOpen = signal(false);
   protected readonly year = new Date().getFullYear();
+
+  // The chatbot widget is hidden on the checkout flow so it can't cover
+  // the Stripe payment element on small screens. This signal flips on
+  // every navigation event.
+  protected readonly currentUrl = signal<string>(this.router.url);
+  protected readonly showChatbot = computed(() => {
+    const url = this.currentUrl();
+    return !HIDDEN_CHATBOT_ROUTES.some((prefix) => url.startsWith(prefix));
+  });
+
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => this.currentUrl.set(event.urlAfterRedirects));
+  }
 
   protected toggleSidenav(): void {
     this.sidenavOpen.update((value) => !value);

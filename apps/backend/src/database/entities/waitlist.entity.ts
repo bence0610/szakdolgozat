@@ -15,6 +15,8 @@ export enum WaitlistStatus {
 @Unique('uq_waitlist_user_match', ['userId', 'matchId'])
 @Index('idx_waitlist_match', ['matchId'])
 @Index('idx_waitlist_status', ['status'])
+@Index('idx_waitlist_match_status_created', ['matchId', 'status', 'createdAt'])
+@Index('idx_waitlist_notified_at', ['notifiedAt'])
 export class Waitlist extends BaseEntity {
   @Column({ type: 'varchar', length: 36, name: 'user_id' })
   userId!: string;

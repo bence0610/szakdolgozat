@@ -81,6 +81,16 @@ export const envValidationSchema = Joi.object({
   CRON_TIMEZONE: Joi.string().default('Europe/Budapest'),
   LOAN_INVITATION_TTL_HOURS: Joi.number().integer().min(1).default(72),
 
+  // Waitlist (Iteration 5)
+  WAITLIST_CLAIM_TTL_SECONDS: Joi.number().integer().min(60).default(600),
+
+  // Chatbot (Iteration 5)
+  CHATBOT_RATE_LIMIT_AUTH: Joi.number().integer().min(1).default(100),
+  CHATBOT_RATE_LIMIT_ANON: Joi.number().integer().min(1).default(20),
+  CHATBOT_HISTORY_TTL_SECONDS: Joi.number().integer().min(60).default(86400),
+  CHATBOT_HISTORY_MAX_MESSAGES: Joi.number().integer().min(2).default(20),
+  CHATBOT_CONTEXT_CACHE_TTL_SECONDS: Joi.number().integer().min(30).default(300),
+
   // Logging
   LOG_LEVEL: Joi.string().valid('error', 'warn', 'info', 'debug', 'verbose').default('info'),
 });

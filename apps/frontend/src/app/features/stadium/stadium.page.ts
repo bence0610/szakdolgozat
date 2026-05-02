@@ -51,6 +51,7 @@ import {
   SeatDetailBottomSheetComponent,
   SeatDetailBottomSheetData,
 } from './components/seat-detail-bottom-sheet/seat-detail-bottom-sheet.component';
+import { WaitlistJoinButtonComponent } from './components/waitlist-join-button/waitlist-join-button.component';
 
 @Component({
   selector: 'kte-stadium-page',
@@ -71,6 +72,7 @@ import {
     SectorSummaryComponent,
     AccessibilityToggleComponent,
     ColorLegendComponent,
+    WaitlistJoinButtonComponent,
   ],
   template: `
     <div class="kte-stadium">
@@ -87,6 +89,16 @@ import {
       </header>
 
       <ng-container *ngIf="(matchId$ | async); else noMatch">
+        <ng-container *ngIf="selectedMatch$ | async as activeMatch">
+          <div *ngIf="isSoldOut(activeMatch)" class="kte-stadium__sold-out">
+            <mat-icon>info</mat-icon>
+            <div>
+              <strong>Telt ház!</strong>
+              <p>Erre a meccsre minden hely elkelt vagy átmenetileg foglalt. Ha mégis szeretnél jönni, iratkozz fel a várólistára - értesítünk, ha valaki visszamondja a jegyét.</p>
+            </div>
+            <kte-waitlist-join-button [matchId]="activeMatch.id" />
+          </div>
+        </ng-container>
         <kte-sector-summary
           [summaries]="(summaries$ | async) ?? []"
           [selectedSection]="(selectedSection$ | async) ?? null"
@@ -234,6 +246,34 @@ import {
         z-index: 5;
       }
 
+      .kte-stadium__sold-out {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 20px;
+        background: rgba(201, 75, 30, 0.08);
+        border-left: 4px solid #C94B1E;
+        border-radius: var(--kte-radius-md);
+      }
+      .kte-stadium__sold-out mat-icon {
+        color: #C94B1E;
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+      .kte-stadium__sold-out p {
+        margin: 4px 0 0;
+        color: #555;
+        font-size: 14px;
+      }
+      @media (max-width: 768px) {
+        .kte-stadium__sold-out {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+      }
+
       .kte-stadium__empty {
         display: flex;
         flex-direction: column;
@@ -379,6 +419,13 @@ export class StadiumPage implements OnInit {
         this.lastSnackbarError = message;
         this.snackBar.open(message, 'Bezárás', { duration: 5000, panelClass: ['kte-snackbar'] });
       });
+  }
+
+  protected isSoldOut(match: MatchListItem | null | undefined): boolean {
+    if (!match) {
+      return false;
+    }
+    return match.status === 'sold_out' || match.availableSeats <= 0;
   }
 
   protected onMatchSelected(matchId: string): void {

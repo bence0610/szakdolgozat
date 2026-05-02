@@ -31,6 +31,7 @@ import { HufCurrencyPipe } from '../../shared/pipes/huf-currency.pipe';
 import { CountdownPipe } from '../../shared/pipes/countdown.pipe';
 import { PaymentsApiService } from '../../shared/services/payments.api.service';
 import { SeatsApiService } from '../../shared/services/seats.api.service';
+import { WeatherApiService } from '../../shared/services/weather.api.service';
 import {
   DiscountBreakdown,
   DiscountBreakdownComponent,
@@ -306,6 +307,7 @@ export class CheckoutPage implements OnInit, AfterViewInit, OnDestroy {
   protected readonly auth = inject(AuthService);
   private readonly paymentsApi = inject(PaymentsApiService);
   private readonly seatsApi = inject(SeatsApiService);
+  private readonly weatherApi = inject(WeatherApiService);
   private readonly stripeService = inject(StripeService);
   private readonly loyaltyService = inject(LoyaltyService);
   private readonly router = inject(Router);
@@ -406,7 +408,7 @@ export class CheckoutPage implements OnInit, AfterViewInit, OnDestroy {
             })),
           }),
         ),
-        firstValueFrom(this.paymentsApi.weatherForMatch(matchId)).catch(() => null),
+        firstValueFrom(this.weatherApi.forMatch(matchId)).catch(() => null),
       ]);
       this.intent.set(intent);
       this.weather.set(weatherForecast);

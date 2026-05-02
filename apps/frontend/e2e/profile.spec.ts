@@ -9,6 +9,19 @@ import {
   TICKETS_EMPTY_RESPONSE,
 } from './fixtures/api-mocks';
 
+// Iteration 5: mock the waitlist endpoint so the new "Várólista" tab does not
+// fire unmocked requests. Returns an empty list by default so existing tests
+// are unaffected.
+function mockWaitlistEmpty(page: import('@playwright/test').Page): Promise<void> {
+  return page.route('**/waitlist/me', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    }),
+  );
+}
+
 /**
  * E2E tests for the User Profile page (/profile) – EPIC E5.
  *
@@ -112,6 +125,8 @@ test.describe('Profile Page – /profile', () => {
     await mockLogout(page);
     // Iteration 4: prevent unmocked requests for new sections
     await mockSeasonPasses(page);
+    // Iteration 5: prevent unmocked requests for the new Várólista tab
+    await mockWaitlistEmpty(page);
   });
 
   test('should show a loading spinner while profile data is being fetched', async ({ page }) => {
