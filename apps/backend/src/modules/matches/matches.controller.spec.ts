@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { MatchesController } from './matches.controller';
@@ -39,7 +39,6 @@ import { Match, MatchStatus, Competition, Ticket, TicketStatus } from '../../dat
 
 const UUID_1 = 'aaaaaaaa-0000-4000-8000-000000000001';
 const UUID_2 = 'aaaaaaaa-0000-4000-8000-000000000002';
-const UUID_3 = 'aaaaaaaa-0000-4000-8000-000000000003';
 const NON_EXISTENT_UUID = 'ffffffff-ffff-4fff-bfff-ffffffffffff';
 
 const HOME_TEAM = 'Kecskeméti TE';
@@ -352,12 +351,6 @@ describe('MatchesController – integration', () => {
     });
 
     it('should NOT include FINISHED matches in upcoming results', async () => {
-      const finishedMatch = makeMatch({
-        id: UUID_1,
-        status: MatchStatus.FINISHED,
-        kickoffAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // past
-      });
-
       // Mock returns empty list, simulating the DB filtering out finished matches
       matchRepoMock = makeMatchRepoMock([]);
       ticketRepoMock = makeTicketRepoMock([]);

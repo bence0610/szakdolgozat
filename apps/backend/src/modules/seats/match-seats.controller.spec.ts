@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { MatchSeatsController } from './match-seats.controller';
 import { SeatsService } from './seats.service';
@@ -120,7 +120,6 @@ function makeTicket(matchId: string, seatId: string, status: TicketStatus): Tick
  */
 function makeRedisMock(lockedSeatIds: string[] = []) {
   // Build a map: key → ownerToken for pipeline GET calls
-  const lockedSet = new Set(lockedSeatIds);
   return {
     pipeline: jest.fn().mockReturnValue({
       get: jest.fn().mockReturnThis(),

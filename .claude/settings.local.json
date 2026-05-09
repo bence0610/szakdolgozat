@@ -36,7 +36,8 @@
       "Bash(echo \"EXIT: $?\")",
       "Bash(echo \"Final exit: $?\")",
       "Bash(git -C /c/Users/User/szakdolgozat/.claude/worktrees/agent-acc30b577b0f81ab4 status --short)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(echo \"Exit: $?\")"
     ]
   }
 }
