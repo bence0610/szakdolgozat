@@ -331,7 +331,7 @@ const WAITLIST_POLL_MS = 5_000;
     `,
   ],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePageComponent implements OnInit {
   private readonly api = inject(AuthApiService);
   private readonly auth = inject(AuthService);
   private readonly passesApi = inject(SeasonPassesService);

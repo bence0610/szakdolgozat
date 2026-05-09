@@ -45,7 +45,7 @@ import { MatchListComponent } from './components/match-list/match-list.component
     `,
   ],
 })
-export class HomePage implements OnInit {
+export class HomePageComponent implements OnInit {
   private readonly store = inject(Store);
 
   protected readonly matches$ = this.store.select(selectAllMatches);

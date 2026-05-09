@@ -187,7 +187,7 @@ import {
     `,
   ],
 })
-export class LoyaltyDashboardPage implements OnInit {
+export class LoyaltyDashboardPageComponent implements OnInit {
   protected readonly snapshot = signal<LoyaltySnapshotResponse | null>(null);
   protected readonly allTiers = signal<LoyaltyTierResponse[]>([]);
   protected readonly loading = signal<boolean>(true);

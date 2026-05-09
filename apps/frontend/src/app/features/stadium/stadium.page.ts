@@ -312,7 +312,7 @@ import { WaitlistJoinButtonComponent } from './components/waitlist-join-button/w
     `,
   ],
 })
-export class StadiumPage implements OnInit {
+export class StadiumPageComponent implements OnInit {
   private readonly store = inject(Store);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);

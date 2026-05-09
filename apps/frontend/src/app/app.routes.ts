@@ -12,13 +12,13 @@ export const APP_ROUTES: Routes = [
         path: '',
         pathMatch: 'full',
         loadComponent: () =>
-          import('./features/home/home.page').then((m) => m.HomePage),
+          import('./features/home/home.page').then((m) => m.HomePageComponent),
         title: 'KTE Jegyportál - Kezdőlap',
       },
       {
         path: 'stadium',
         loadComponent: () =>
-          import('./features/stadium/stadium.page').then((m) => m.StadiumPage),
+          import('./features/stadium/stadium.page').then((m) => m.StadiumPageComponent),
         title: 'Stadion - Helyválasztás',
       },
       {
@@ -59,13 +59,13 @@ export const APP_ROUTES: Routes = [
         path: 'profile',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/profile/profile.page').then((m) => m.ProfilePage),
+          import('./features/profile/profile.page').then((m) => m.ProfilePageComponent),
         title: 'Profil',
       },
       {
         path: 'loyalty',
         loadComponent: () =>
-          import('./features/loyalty/loyalty-dashboard.page').then((m) => m.LoyaltyDashboardPage),
+          import('./features/loyalty/loyalty-dashboard.page').then((m) => m.LoyaltyDashboardPageComponent),
         title: 'Hűség Dashboard',
       },
       {
@@ -78,7 +78,7 @@ export const APP_ROUTES: Routes = [
       {
         path: '**',
         loadComponent: () =>
-          import('./features/not-found/not-found.page').then((m) => m.NotFoundPage),
+          import('./features/not-found/not-found.page').then((m) => m.NotFoundPageComponent),
         title: '404 - Az oldal nem található',
       },
     ],

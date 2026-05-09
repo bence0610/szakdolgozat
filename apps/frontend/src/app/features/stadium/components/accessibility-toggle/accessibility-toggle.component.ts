@@ -14,10 +14,11 @@ import { MatIconModule } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatSlideToggleModule, MatIconModule],
   template: `
-    <label class="kte-a11y-toggle">
+    <label class="kte-a11y-toggle" for="kte-a11y-toggle">
       <mat-icon class="kte-a11y-toggle__icon">accessible</mat-icon>
       <span class="kte-a11y-toggle__label">Csak akadálymentes ülések</span>
       <mat-slide-toggle
+        id="kte-a11y-toggle"
         color="accent"
         [checked]="checked"
         (change)="changed.emit($event.checked)"

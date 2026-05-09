@@ -48,4 +48,4 @@ import { MatIconModule } from '@angular/material/icon';
     `,
   ],
 })
-export class NotFoundPage {}
+export class NotFoundPageComponent {}
