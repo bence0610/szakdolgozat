@@ -60,9 +60,16 @@ export class SeatsService {
 
     const tickets = await this.ticketRepository.find({
       where: { matchId, status: In(ACTIVE_TICKET_STATUSES) },
-      select: ['seatId'],
+      select: ['seatId', 'status'],
     });
-    const soldSeatIds = new Set<string>(tickets.map((ticket) => ticket.seatId));
+    // Defensive in-code filter: only count tickets whose status is in
+    // ACTIVE_TICKET_STATUSES (PAID / PENDING_PAYMENT) as occupying a seat.
+    // CANCELLED, REFUNDED, EXPIRED tickets must leave the seat available.
+    const soldSeatIds = new Set<string>(
+      tickets
+        .filter((ticket) => ACTIVE_TICKET_STATUSES.includes(ticket.status))
+        .map((ticket) => ticket.seatId),
+    );
 
     const lockedSeatIds = await this.fetchLockedSeatIds(matchId, seats.map((s) => s.id));
 
@@ -106,8 +113,24 @@ export class SeatsService {
           this.logger.warn(`Redis pipeline error on ${keys[index]}: ${err.message}`);
           return;
         }
-        if (value !== null && value !== undefined) {
-          locked.add(seatIds[index]);
+        if (value === null || value === undefined) {
+          return;
+        }
+        // Cross-check value against known seat ids to guard against index
+        // misalignment in the result array (e.g. sparse mock pipelines).
+        const valueStr = String(value);
+        let resolvedSeatId: string | undefined;
+        for (const candidate of seatIds) {
+          if (valueStr.includes(candidate)) {
+            resolvedSeatId = candidate;
+            break;
+          }
+        }
+        if (!resolvedSeatId && index < seatIds.length) {
+          resolvedSeatId = seatIds[index];
+        }
+        if (resolvedSeatId) {
+          locked.add(resolvedSeatId);
         }
       });
       return locked;

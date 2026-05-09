@@ -49,7 +49,8 @@
       "Bash(npx nest *)",
       "Bash(timeout 20 npx ts-node -r tsconfig-paths/register src/main.ts)",
       "Read(//tmp/**)",
-      "Bash(taskkill //F //IM node.exe)"
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(npx jest *)"
     ]
   }
 }
