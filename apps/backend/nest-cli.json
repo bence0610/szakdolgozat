@@ -6,7 +6,7 @@
     "deleteOutDir": true,
     "assets": [
       {
-        "include": "modules/email/templates/**/*",
+        "include": "modules/email/templates/**/*.hbs",
         "outDir": "dist"
       }
     ],

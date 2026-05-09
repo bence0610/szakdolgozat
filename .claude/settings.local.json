@@ -44,7 +44,8 @@
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\apps\\\\backend\\\\node_modules\\\\.bin\\\\\" -Filter \"tsc*\" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name; if \\(-not $?\\) { \"bin dir missing, checking node_modules directly\" })",
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\apps\\\\backend\\\\node_modules\" -Directory -Name | Where-Object { $_ -match \"typescript\" })",
       "PowerShell(& \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\node_modules\\\\.bin\\\\tsc.cmd\" --version)",
-      "PowerShell(& \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\node_modules\\\\.bin\\\\tsc.cmd\" --noEmit --project \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\apps\\\\backend\\\\tsconfig.json\" 2>&1)"
+      "PowerShell(& \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\node_modules\\\\.bin\\\\tsc.cmd\" --noEmit --project \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\apps\\\\backend\\\\tsconfig.json\" 2>&1)",
+      "Bash(echo \"EXIT_CODE=$?\")"
     ]
   }
 }
