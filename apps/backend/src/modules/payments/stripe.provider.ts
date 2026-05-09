@@ -11,7 +11,7 @@ export const stripeProvider: Provider = {
   useFactory: (configService: ConfigService): Stripe => {
     const stripeConfig = configService.getOrThrow<StripeConfig>('stripe');
     return new Stripe(stripeConfig.secretKey, {
-      apiVersion: '2024-09-30.acacia',
+      apiVersion: '2024-06-20' as Stripe.LatestApiVersion,
       typescript: true,
       maxNetworkRetries: 2,
       timeout: 10_000,

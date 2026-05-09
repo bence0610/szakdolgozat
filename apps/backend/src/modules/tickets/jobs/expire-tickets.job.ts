@@ -80,7 +80,9 @@ export class ExpireTicketsJob {
       this.cronConfig.timezone,
     );
     try {
-      this.schedulerRegistry.addCronJob('ticketExpireSweep', job);
+      // Cast: @nestjs/schedule pins its own cron version which differs from the
+      // workspace's cron — runtime-compatible, but TS types diverge.
+      this.schedulerRegistry.addCronJob('ticketExpireSweep', job as unknown as Parameters<SchedulerRegistry['addCronJob']>[1]);
       job.start();
       this.logger.log(
         `ExpireTicketsJob registered cron="${this.cronConfig.ticketExpireExpression}" tz="${this.cronConfig.timezone}"`,

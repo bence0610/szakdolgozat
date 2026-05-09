@@ -36,44 +36,48 @@ import { RevenueSummaryCardComponent } from '../components/revenue-summary-card.
           <mat-spinner diameter="40" />
           <span>Bevételi statisztikák betöltése…</span>
         </div>
-      } @else if (error(); as err) {
-        <div class="kte-revenue__error" role="alert">
-          <mat-icon>error</mat-icon>
-          {{ err }}
-        </div>
-      } @else if (stats(); as data) {
-        <div class="kte-revenue__cards">
-          <kte-revenue-summary-card
-            label="Mai bevétel"
-            icon="today"
-            [amount]="data.summary.todayRevenue"
-            [subtitle]="data.summary.todayTicketCount + ' jegy ma'"
-          />
-          <kte-revenue-summary-card
-            label="Havi bevétel"
-            icon="calendar_month"
-            [amount]="data.summary.monthRevenue"
-            [subtitle]="data.summary.monthTicketCount + ' jegy a hónapban'"
-          />
-          @if (data.summary.topMatch; as top) {
-            <kte-revenue-summary-card
-              label="Legjobb meccs"
-              icon="emoji_events"
-              [amount]="top.revenue"
-              [subtitle]="top.homeTeam + ' vs ' + top.awayTeam"
-            />
+      } @else {
+        @if (error(); as err) {
+          <div class="kte-revenue__error" role="alert">
+            <mat-icon>error</mat-icon>
+            {{ err }}
+          </div>
+        } @else {
+          @if (stats(); as data) {
+            <div class="kte-revenue__cards">
+              <kte-revenue-summary-card
+                label="Mai bevétel"
+                icon="today"
+                [amount]="data.summary.todayRevenue"
+                [subtitle]="data.summary.todayTicketCount + ' jegy ma'"
+              />
+              <kte-revenue-summary-card
+                label="Havi bevétel"
+                icon="calendar_month"
+                [amount]="data.summary.monthRevenue"
+                [subtitle]="data.summary.monthTicketCount + ' jegy a hónapban'"
+              />
+              @if (data.summary.topMatch; as top) {
+                <kte-revenue-summary-card
+                  label="Legjobb meccs"
+                  icon="emoji_events"
+                  [amount]="top.revenue"
+                  [subtitle]="top.homeTeam + ' vs ' + top.awayTeam"
+                />
+              }
+            </div>
+
+            <kte-revenue-line-chart [data]="data.daily" />
+
+            <article class="kte-revenue__table">
+              <header>
+                <h2>Top mérkőzések bevétel szerint</h2>
+                <p>Az összesítés a {{ daysWindow() }} napos időablak alapján készül.</p>
+              </header>
+              <kte-revenue-by-match-table [rows]="data.byMatch" />
+            </article>
           }
-        </div>
-
-        <kte-revenue-line-chart [data]="data.daily" />
-
-        <article class="kte-revenue__table">
-          <header>
-            <h2>Top mérkőzések bevétel szerint</h2>
-            <p>Az összesítés a {{ daysWindow() }} napos időablak alapján készül.</p>
-          </header>
-          <kte-revenue-by-match-table [rows]="data.byMatch" />
-        </article>
+        }
       }
     </section>
   `,

@@ -38,8 +38,6 @@ export class AuthService {
 
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(LoyaltyTransaction)
-    private readonly loyaltyRepository: Repository<LoyaltyTransaction>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly refreshStore: RefreshTokenStore,

@@ -13,6 +13,7 @@ export enum SeasonPassStatus {
 }
 
 @Entity({ name: 'season_passes' })
+@Index('IDX_season_passes_qr', ['qrCode'], { unique: true })
 @Index('idx_season_passes_user', ['userId'])
 @Index('idx_season_passes_status', ['status'])
 export class SeasonPass extends BaseEntity {
@@ -40,7 +41,7 @@ export class SeasonPass extends BaseEntity {
   @Column({ type: 'varchar', length: 8, default: 'HUF' })
   currency!: string;
 
-  @Column({ type: 'varchar', length: 64, unique: true, name: 'qr_code' })
+  @Column({ type: 'varchar', length: 64, name: 'qr_code' })
   qrCode!: string;
 
   @Column({ type: 'boolean', default: false, name: 'auto_renew' })

@@ -22,6 +22,7 @@ export enum TicketSource {
 
 @Entity({ name: 'tickets' })
 @Unique('uq_tickets_match_seat', ['matchId', 'seatId'])
+@Index('IDX_tickets_qr', ['qrCode'], { unique: true })
 @Index('idx_tickets_user', ['userId'])
 @Index('idx_tickets_status', ['status'])
 @Index('idx_tickets_payment_intent', ['stripePaymentIntentId'])
@@ -51,10 +52,10 @@ export class Ticket extends BaseEntity {
   @Column({ type: 'varchar', length: 8, default: 'HUF' })
   currency!: string;
 
-  @Column({ type: 'varchar', length: 64, unique: true, name: 'qr_code' })
+  @Column({ type: 'varchar', length: 64, name: 'qr_code' })
   qrCode!: string;
 
-  @Column({ type: 'varchar', length: 36, unique: true, name: 'qr_jti' })
+  @Column({ type: 'varchar', length: 36, name: 'qr_jti' })
   qrJti!: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true, name: 'stripe_payment_intent_id' })
@@ -90,4 +91,8 @@ export class Ticket extends BaseEntity {
   @ManyToOne(() => SeasonPass, (pass) => pass.tickets, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'season_pass_id' })
   seasonPass?: SeasonPass;
+
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'scanned_by_user_id' })
+  scannedBy?: User;
 }

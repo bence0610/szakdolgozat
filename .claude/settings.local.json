@@ -29,7 +29,14 @@
       "Bash(node *)",
       "Bash(grep -n 'selectedMatch\\\\$\\\\|sold-out\\\\|isSoldOut' /c/Users/User/szakdolgozat/apps/frontend/src/app/features/stadium/stadium.page.ts)",
       "Bash(xargs cat *)",
-      "Bash(xargs wc *)"
+      "Bash(xargs wc *)",
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(npx ng *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(echo \"Final exit: $?\")",
+      "Bash(git -C /c/Users/User/szakdolgozat/.claude/worktrees/agent-acc30b577b0f81ab4 status --short)",
+      "Bash(git *)"
     ]
   }
 }

@@ -73,7 +73,8 @@ const WAITLIST_POLL_MS = 5_000;
           <mat-spinner diameter="48" />
           <span>Profil betöltése...</span>
         </div>
-      } @else if (profile(); as user) {
+      } @else {
+        @if (profile(); as user) {
         <mat-card class="kte-profile__hero" appearance="outlined">
           <mat-card-content class="kte-profile__hero-content">
             <div class="kte-profile__avatar" aria-hidden="true">
@@ -204,6 +205,7 @@ const WAITLIST_POLL_MS = 5_000;
             Kijelentkezés
           </button>
         </div>
+        }
       }
     </section>
   `,

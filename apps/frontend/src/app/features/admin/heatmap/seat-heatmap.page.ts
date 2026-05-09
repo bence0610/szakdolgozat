@@ -66,16 +66,20 @@ const REFRESH_MS = 60_000;
           <mat-spinner diameter="36" />
           <span>Foglaltság betöltése…</span>
         </div>
-      } @else if (error(); as err) {
-        <div class="kte-heatmap-page__error" role="alert">
-          <mat-icon>error</mat-icon>
-          {{ err }}
-        </div>
-      } @else if (occupancy(); as data) {
-        <kte-stadium-heatmap [sectors]="data.sectors" />
-        <kte-heatmap-legend />
       } @else {
-        <p class="kte-heatmap-page__empty">Válassz mérkőzést a foglaltsági kép megjelenítéséhez.</p>
+        @if (error(); as err) {
+          <div class="kte-heatmap-page__error" role="alert">
+            <mat-icon>error</mat-icon>
+            {{ err }}
+          </div>
+        } @else {
+          @if (occupancy(); as data) {
+            <kte-stadium-heatmap [sectors]="data.sectors" />
+            <kte-heatmap-legend />
+          } @else {
+            <p class="kte-heatmap-page__empty">Válassz mérkőzést a foglaltsági kép megjelenítéséhez.</p>
+          }
+        }
       }
     </section>
   `,

@@ -47,7 +47,7 @@ export class PassLoan extends BaseEntity {
   @Column({ type: 'timestamp', nullable: true, name: 'accepted_at' })
   acceptedAt?: Date;
 
-  @Column({ type: 'varchar', length: 36, nullable: true, name: 'qr_jti' })
+  @Column({ type: 'varchar', length: 36, nullable: true, unique: true, name: 'qr_jti' })
   qrJti?: string;
 
   @Column({ type: 'timestamp', nullable: true, name: 'qr_revoked_at' })

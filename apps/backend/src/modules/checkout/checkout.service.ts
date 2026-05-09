@@ -40,7 +40,6 @@ export class CheckoutService {
   private readonly stripeConfig: StripeConfig;
 
   constructor(
-    @InjectRepository(Ticket) private readonly ticketRepository: Repository<Ticket>,
     @InjectRepository(Match) private readonly matchRepository: Repository<Match>,
     @InjectRepository(Seat) private readonly seatRepository: Repository<Seat>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,

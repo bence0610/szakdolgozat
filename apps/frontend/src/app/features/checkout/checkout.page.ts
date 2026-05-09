@@ -126,7 +126,7 @@ const MAX_RETRY_ATTEMPTS = 3;
                       <strong>Több sikertelen próbálkozás történt.</strong>
                       <p>
                         Vegye fel a kapcsolatot az ügyfélszolgálattal:
-                        <a href="mailto:jegy@kte.hu">jegy@kte.hu</a>
+                        <a [href]="'mailto:' + supportEmail">{{ supportEmail }}</a>
                       </p>
                     </div>
                   </div>
@@ -320,6 +320,7 @@ export class CheckoutPage implements OnInit, AfterViewInit, OnDestroy {
   protected readonly failureCount = signal(0);
   protected readonly discountPreview = signal<DiscountBreakdown | null>(null);
   protected readonly MAX_RETRY_ATTEMPTS = MAX_RETRY_ATTEMPTS;
+  protected readonly supportEmail = 'jegy@kte.hu';
 
   protected readonly totalAmount = computed(() => this.cart.total());
   protected readonly sectionsInCart = computed(() =>

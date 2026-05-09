@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as QRCode from 'qrcode';
@@ -39,7 +39,6 @@ export interface VerifyResult {
  */
 @Injectable()
 export class QrService {
-  private readonly logger = new Logger(QrService.name);
   private readonly qrConfig: QrConfig;
   private readonly jwtService: JwtService;
 

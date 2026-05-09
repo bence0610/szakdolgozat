@@ -81,7 +81,9 @@ export class LoanReleaseJob {
       this.cronConfig.timezone,
     );
     try {
-      this.schedulerRegistry.addCronJob('loanReleaseSweep', job);
+      // Cast: @nestjs/schedule pins its own cron version which differs from the
+      // workspace's cron — runtime-compatible, but TS types diverge.
+      this.schedulerRegistry.addCronJob('loanReleaseSweep', job as unknown as Parameters<SchedulerRegistry['addCronJob']>[1]);
       job.start();
       this.logger.log(
         `LoanReleaseJob registered cron="${this.cronConfig.loanReleaseExpression}" tz="${this.cronConfig.timezone}"`,

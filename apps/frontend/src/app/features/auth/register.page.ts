@@ -56,7 +56,7 @@ const passwordMatchValidator = (group: AbstractControl): ValidationErrors | null
               <mat-form-field appearance="outline">
                 <mat-label>Vezetéknév</mat-label>
                 <input matInput formControlName="lastName" autocomplete="family-name" />
-                @if (form.controls.lastName.touched && form.controls.lastName.errors) {
+                @if (form.controls['lastName'].touched && form.controls['lastName'].errors) {
                   <mat-error>Min. 2 karakter szükséges.</mat-error>
                 }
               </mat-form-field>
@@ -64,7 +64,7 @@ const passwordMatchValidator = (group: AbstractControl): ValidationErrors | null
               <mat-form-field appearance="outline">
                 <mat-label>Keresztnév</mat-label>
                 <input matInput formControlName="firstName" autocomplete="given-name" />
-                @if (form.controls.firstName.touched && form.controls.firstName.errors) {
+                @if (form.controls['firstName'].touched && form.controls['firstName'].errors) {
                   <mat-error>Min. 2 karakter szükséges.</mat-error>
                 }
               </mat-form-field>
@@ -74,9 +74,9 @@ const passwordMatchValidator = (group: AbstractControl): ValidationErrors | null
               <mat-label>E-mail</mat-label>
               <input matInput type="email" formControlName="email" autocomplete="email" />
               <mat-icon matPrefix>mail</mat-icon>
-              @if (form.controls.email.touched && form.controls.email.errors) {
+              @if (form.controls['email'].touched && form.controls['email'].errors) {
                 <mat-error>
-                  @if (form.controls.email.errors?.['required']) {
+                  @if (form.controls['email'].errors?.['required']) {
                     E-mail megadása kötelező.
                   } @else {
                     Érvénytelen e-mail formátum.
@@ -108,11 +108,11 @@ const passwordMatchValidator = (group: AbstractControl): ValidationErrors | null
                 <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
               <mat-hint>Min. 8 karakter, legalább egy betű és egy szám.</mat-hint>
-              @if (form.controls.password.touched && form.controls.password.errors) {
+              @if (form.controls['password'].touched && form.controls['password'].errors) {
                 <mat-error>
-                  @if (form.controls.password.errors?.['minlength']) {
+                  @if (form.controls['password'].errors?.['minlength']) {
                     A jelszónak legalább 8 karakteresnek kell lennie.
-                  } @else if (form.controls.password.errors?.['pattern']) {
+                  } @else if (form.controls['password'].errors?.['pattern']) {
                     Tartalmazzon legalább egy betűt és egy számot.
                   } @else {
                     A jelszó megadása kötelező.
@@ -129,7 +129,7 @@ const passwordMatchValidator = (group: AbstractControl): ValidationErrors | null
                 formControlName="passwordConfirm"
                 autocomplete="new-password"
               />
-              @if (form.errors?.['passwordMismatch'] && form.controls.passwordConfirm.touched) {
+              @if (form.errors?.['passwordMismatch'] && form.controls['passwordConfirm'].touched) {
                 <mat-error>A két jelszó nem egyezik.</mat-error>
               }
             </mat-form-field>

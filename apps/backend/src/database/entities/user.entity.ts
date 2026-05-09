@@ -21,7 +21,7 @@ export enum LoyaltyTier {
 @Entity({ name: 'users' })
 @Index('idx_users_email', ['email'], { unique: true })
 export class User extends BaseEntity {
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255 })
   email!: string;
 
   @Column({ type: 'varchar', length: 255, name: 'password_hash' })
