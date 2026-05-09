@@ -19,6 +19,8 @@ jobs:
     name: Backend (lint + test)
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: apps/backend
@@ -53,6 +55,8 @@ jobs:
     name: Frontend (lint + test)
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: apps/frontend
