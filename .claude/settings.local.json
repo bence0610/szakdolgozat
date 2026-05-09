@@ -37,7 +37,14 @@
       "Bash(echo \"Final exit: $?\")",
       "Bash(git -C /c/Users/User/szakdolgozat/.claude/worktrees/agent-acc30b577b0f81ab4 status --short)",
       "Bash(git *)",
-      "Bash(echo \"Exit: $?\")"
+      "Bash(echo \"Exit: $?\")",
+      "mcp__ide__getDiagnostics",
+      "Bash(ls node_modules/.bin/tsc*)",
+      "Bash(which tsc *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\apps\\\\backend\\\\node_modules\\\\.bin\\\\\" -Filter \"tsc*\" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name; if \\(-not $?\\) { \"bin dir missing, checking node_modules directly\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\apps\\\\backend\\\\node_modules\" -Directory -Name | Where-Object { $_ -match \"typescript\" })",
+      "PowerShell(& \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\node_modules\\\\.bin\\\\tsc.cmd\" --version)",
+      "PowerShell(& \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\node_modules\\\\.bin\\\\tsc.cmd\" --noEmit --project \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\apps\\\\backend\\\\tsconfig.json\" 2>&1)"
     ]
   }
 }

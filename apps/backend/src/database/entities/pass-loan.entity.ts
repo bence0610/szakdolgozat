@@ -19,6 +19,8 @@ export enum PassLoanStatus {
 @Index('idx_pass_loans_borrower', ['borrowerUserId'])
 @Index('idx_pass_loans_match', ['matchId'])
 @Index('idx_pass_loans_status_match', ['status', 'matchId'])
+@Index('IDX_pass_loans_token', ['invitationToken'], { unique: true })
+@Index('uq_pass_loans_qr_jti', ['qrJti'], { unique: true })
 export class PassLoan extends BaseEntity {
   @Column({ type: 'varchar', length: 36, name: 'season_pass_id' })
   seasonPassId!: string;
@@ -38,7 +40,7 @@ export class PassLoan extends BaseEntity {
   @Column({ type: 'enum', enum: PassLoanStatus, default: PassLoanStatus.PENDING })
   status!: PassLoanStatus;
 
-  @Column({ type: 'varchar', length: 64, unique: true, name: 'invitation_token' })
+  @Column({ type: 'varchar', length: 64, name: 'invitation_token' })
   invitationToken!: string;
 
   @Column({ type: 'timestamp', name: 'expires_at' })
@@ -47,7 +49,7 @@ export class PassLoan extends BaseEntity {
   @Column({ type: 'timestamp', nullable: true, name: 'accepted_at' })
   acceptedAt?: Date;
 
-  @Column({ type: 'varchar', length: 36, nullable: true, unique: true, name: 'qr_jti' })
+  @Column({ type: 'varchar', length: 36, nullable: true, name: 'qr_jti' })
   qrJti?: string;
 
   @Column({ type: 'timestamp', nullable: true, name: 'qr_revoked_at' })

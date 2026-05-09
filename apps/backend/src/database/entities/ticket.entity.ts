@@ -23,6 +23,7 @@ export enum TicketSource {
 @Entity({ name: 'tickets' })
 @Unique('uq_tickets_match_seat', ['matchId', 'seatId'])
 @Index('IDX_tickets_qr', ['qrCode'], { unique: true })
+@Index('uq_tickets_qr_jti', ['qrJti'], { unique: true })
 @Index('idx_tickets_user', ['userId'])
 @Index('idx_tickets_status', ['status'])
 @Index('idx_tickets_payment_intent', ['stripePaymentIntentId'])
