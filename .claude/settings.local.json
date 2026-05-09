@@ -45,7 +45,11 @@
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\apps\\\\backend\\\\node_modules\" -Directory -Name | Where-Object { $_ -match \"typescript\" })",
       "PowerShell(& \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\node_modules\\\\.bin\\\\tsc.cmd\" --version)",
       "PowerShell(& \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\node_modules\\\\.bin\\\\tsc.cmd\" --noEmit --project \"C:\\\\Users\\\\User\\\\szakdolgozat\\\\apps\\\\backend\\\\tsconfig.json\" 2>&1)",
-      "Bash(echo \"EXIT_CODE=$?\")"
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(npx nest *)",
+      "Bash(timeout 20 npx ts-node -r tsconfig-paths/register src/main.ts)",
+      "Read(//tmp/**)",
+      "Bash(taskkill //F //IM node.exe)"
     ]
   }
 }
