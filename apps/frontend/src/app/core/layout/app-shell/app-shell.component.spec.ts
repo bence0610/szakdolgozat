@@ -2,13 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideStore } from '@ngrx/store';
 import { AppShellComponent } from './app-shell.component';
 
 describe('AppShellComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppShellComponent, HttpClientTestingModule],
-      providers: [provideRouter([]), provideAnimationsAsync()],
+      providers: [provideRouter([]), provideAnimationsAsync(), provideStore({})],
     }).compileComponents();
   });
 
