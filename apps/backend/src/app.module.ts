@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -33,7 +34,15 @@ import { SeasonPassesModule } from './modules/season-passes/season-passes.module
         abortEarly: false,
         allowUnknown: true,
       },
-      envFilePath: ['.env'],
+      // Resolve the backend's own .env regardless of process.cwd() (root vs apps/backend).
+      // Without this, running from the monorepo root means '.env' resolves to a non-existent
+      // file and process.env.STRIPE_SECRET_KEY ends up as the '.env.example' placeholder.
+      envFilePath: [
+        join(process.cwd(), 'apps', 'backend', '.env'),
+        join(process.cwd(), '.env'),
+        join(__dirname, '..', '..', '.env'),
+        '.env',
+      ],
     }),
     ScheduleModule.forRoot(),
     DatabaseModule,
