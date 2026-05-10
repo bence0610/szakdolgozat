@@ -3,6 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { QrService } from './qr.service';
 import { REDIS_CLIENT } from '../../redis/redis.constants';
 
+// QR generation involves PNG encoding via the `qrcode` package which can take
+// >5 s on slow CI runners; raise the per-test timeout to keep this suite stable.
+jest.setTimeout(30_000);
+
 class FakeRedis {
   private store = new Map<string, string>();
 

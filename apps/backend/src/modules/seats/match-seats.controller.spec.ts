@@ -10,6 +10,10 @@ import { REDIS_CLIENT } from '../../redis/redis.constants';
 import { ConfigService } from '@nestjs/config';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 
+// Bootstrapping a Nest TestingModule + supertest server per test can exceed
+// the 5 s default on slower CI hosts; bump the timeout for this suite only.
+jest.setTimeout(30_000);
+
 /**
  * Integration tests for MatchSeatsController.
  *
