@@ -4,12 +4,18 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { provideStore } from '@ngrx/store';
 import { AppShellComponent } from './app-shell.component';
+import { cartReducer } from '../../../state/cart/cart.reducer';
+import { CART_FEATURE_KEY } from '../../../state/cart/cart.selectors';
 
 describe('AppShellComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppShellComponent, HttpClientTestingModule],
-      providers: [provideRouter([]), provideAnimationsAsync(), provideStore({})],
+      providers: [
+        provideRouter([]),
+        provideAnimationsAsync(),
+        provideStore({ [CART_FEATURE_KEY]: cartReducer }),
+      ],
     }).compileComponents();
   });
 
