@@ -104,7 +104,12 @@ export class CheckoutService {
         }
         const basePrice = Number.parseFloat(match.basePrice);
         const modifier = Number.parseFloat(seat.priceModifier);
-        const unitPrice = Math.round(basePrice * modifier * 100) / 100;
+        // HUF is a real-life zero-decimal currency, but Stripe's API treats
+        // HUF as a 2-decimal currency (smallest unit = fillér). The major-unit
+        // forint amount is stored on the Ticket and shown in the UI; the * 100
+        // conversion to minor units happens when building the PaymentIntent.
+        const unitPrice = Math.round(basePrice * modifier);
+        console.log('[Checkout] base_price:', basePrice, '| price_modifier:', modifier, '| unitPrice:', unitPrice);
         originalTotalMajor += unitPrice;
 
         const ticket = ticketRepo.create({
@@ -121,20 +126,25 @@ export class CheckoutService {
         tickets.push(ticket);
       }
 
-      // Convert HUF (no decimals) to Stripe minor units. For HUF, Stripe
-      // expects the integer amount (no fractional unit).
-      const originalMinor = Math.round(originalTotalMajor);
-      const discountedMinor = Math.round((originalTotalMajor * (100 - discountPercent)) / 100);
-      const discountAmount = originalMinor - discountedMinor;
+      // Convert HUF (forint, major unit) to Stripe minor units (fillér).
+      // Stripe's API treats HUF as a 2-decimal currency, so 6 750 HUF must
+      // be sent as 675 000. The originalMajor / discountedMajor values are
+      // returned to the frontend (cart UI) and persisted as ticket.pricePaid.
+      const originalMajor = Math.round(originalTotalMajor);
+      const discountedMajor = Math.round((originalTotalMajor * (100 - discountPercent)) / 100);
+      const discountAmount = originalMajor - discountedMajor;
+      const stripeAmount = discountedMajor * 100;
+
+      console.log('[Stripe] PaymentIntent amount being sent:', stripeAmount, '| currency: huf');
 
       const intent = await this.stripe.paymentIntents.create(
         {
-          amount: discountedMinor,
+          amount: stripeAmount,
           currency: this.stripeConfig.currency,
           automatic_payment_methods: { enabled: true },
           metadata: {
             userId,
-            originalAmount: String(originalMinor),
+            originalAmount: String(originalMajor),
             discountPercent: String(discountPercent),
             discountAmount: String(discountAmount),
             ticketCount: String(tickets.length),
@@ -151,14 +161,14 @@ export class CheckoutService {
       const saved = await ticketRepo.save(tickets);
 
       this.logger.log(
-        `PaymentIntent ${intent.id} created user=${userId} tickets=${saved.length} amount=${discountedMinor} discount=${discountPercent}%`,
+        `PaymentIntent ${intent.id} created user=${userId} tickets=${saved.length} amount_huf=${discountedMajor} stripe_amount=${stripeAmount} discount=${discountPercent}%`,
       );
 
       return {
         paymentIntentId: intent.id,
         clientSecret: intent.client_secret ?? '',
-        amount: discountedMinor,
-        originalAmount: originalMinor,
+        amount: discountedMajor,
+        originalAmount: originalMajor,
         discountAmount,
         discountPercent,
         currency: this.stripeConfig.currency.toUpperCase(),

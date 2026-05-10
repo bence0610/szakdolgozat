@@ -137,7 +137,7 @@ const MAX_RETRY_ATTEMPTS = 3;
                   color="primary"
                   type="button"
                   class="kte-checkout__pay"
-                  [disabled]="!intent() || processing()"
+                  [disabled]="!intent() || !paymentElementMounted() || processing()"
                   (click)="confirmPayment()"
                 >
                   @if (processing()) {
@@ -319,6 +319,7 @@ export class CheckoutPageComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly initializationError = signal<string | null>(null);
   protected readonly failureCount = signal(0);
   protected readonly discountPreview = signal<DiscountBreakdown | null>(null);
+  protected readonly paymentElementMounted = signal(false);
   protected readonly MAX_RETRY_ATTEMPTS = MAX_RETRY_ATTEMPTS;
   protected readonly supportEmail = 'jegy@kte.hu';
 
@@ -360,6 +361,7 @@ export class CheckoutPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.paymentElementMounted.set(false);
     this.paymentElement?.destroy();
   }
 
@@ -428,14 +430,35 @@ export class CheckoutPageComponent implements OnInit, AfterViewInit, OnDestroy {
     const { stripe, elements } = await this.stripeService.createElements(clientSecret);
     this.stripe = stripe;
     this.elements = elements;
-    this.paymentElement = elements.create('payment', {
-      layout: 'tabs',
+    const paymentElement = elements.create('payment', { layout: 'tabs' });
+    this.paymentElement = paymentElement;
+
+    paymentElement.on('ready', () => {
+      this.paymentElementMounted.set(true);
     });
-    this.paymentElement.mount(target);
+    paymentElement.on('loaderror', (event) => {
+      this.paymentElementMounted.set(false);
+      const message = event?.error?.message ?? 'A fizetési mező betöltése sikertelen.';
+      this.initializationError.set(message);
+    });
+
+    // Defer the mount() call to the next macrotask so the host <div> is
+    // guaranteed to be attached to the document. Without this, mount() can
+    // race with Angular's view commit on slower devices and Stripe later
+    // refuses confirmPayment() with "elements should have a mounted Payment
+    // Element or Express Checkout Element."
+    setTimeout(() => {
+      try {
+        paymentElement.mount(target);
+      } catch (error) {
+        this.paymentElementMounted.set(false);
+        this.initializationError.set(this.normalizeError(error));
+      }
+    }, 0);
   }
 
   protected async confirmPayment(): Promise<void> {
-    if (!this.stripe || !this.elements) {
+    if (!this.stripe || !this.elements || !this.paymentElementMounted()) {
       return;
     }
     if (this.failureCount() >= MAX_RETRY_ATTEMPTS) {

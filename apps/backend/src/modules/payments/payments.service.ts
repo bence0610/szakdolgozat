@@ -78,9 +78,12 @@ export class PaymentsService {
       .sort()
       .join('_')}`;
 
+    const stripeAmount = this.toStripeAmount(totalAmount);
+    console.log('[Stripe] PaymentIntent amount being sent:', stripeAmount, '| currency: huf');
+
     const intent = await this.stripe.paymentIntents.create(
       {
-        amount: this.toStripeAmount(totalAmount),
+        amount: stripeAmount,
         currency: this.currency,
         automatic_payment_methods: { enabled: true },
         metadata: {
@@ -303,15 +306,19 @@ export class PaymentsService {
         );
       }
 
-      const price = Math.round(basePrice * Number(seat.priceModifier));
+      const modifier = Number(seat.priceModifier);
+      const price = Math.round(basePrice * modifier);
+      console.log('[Checkout] base_price:', basePrice, '| price_modifier:', modifier, '| unitPrice:', price);
       lines.push({ seat, ownerToken: item.ownerToken, price });
     }
     return lines;
   }
 
   private toStripeAmount(huf: number): number {
-    // Stripe expects HUF in the smallest unit (which for HUF is also 1 forint),
-    // but the API requires integer minor units; Stripe treats HUF as 1:1.
-    return Math.round(huf);
+    // Stripe's API treats HUF as a 2-decimal currency (smallest unit = fillér),
+    // even though HUF is real-life zero-decimal. A 6 750 HUF charge must be
+    // submitted as 675 000. Without the * 100 conversion Stripe interprets the
+    // value as 67.50 HUF and rejects it (minimum charge is 175 HUF).
+    return Math.round(huf) * 100;
   }
 }
